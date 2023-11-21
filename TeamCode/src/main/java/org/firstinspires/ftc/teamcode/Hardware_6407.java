@@ -13,17 +13,14 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 
 public class Hardware_6407 {
     private ElapsedTime runtime = new ElapsedTime();
-    private DcMotor LFront = null;
-    private DcMotor LBack = null;
-    private DcMotor RFront = null;
-    private DcMotor RBack = null;
-    private DcMotor leftArm = null;
-    private DcMotor rightArm = null;
-    private DcMotor Joint = null;
+    public DcMotor LFront = null;
+    public DcMotor LBack = null;
+    public DcMotor RFront = null;
+    public DcMotor RBack = null;
+
 
 
 
@@ -46,7 +43,6 @@ public class Hardware_6407 {
     HardwareMap hwMap = null;
     private ElapsedTime period = new ElapsedTime();
 
-    private VuforiaLocalizer vuforia;
 
     private TFObjectDetector tfod;
 
@@ -64,13 +60,10 @@ public class Hardware_6407 {
         LBack  = hwMap.get(DcMotor.class, "LBack");
         RFront = hwMap.get(DcMotor.class, "RFront");
         RBack = hwMap.get(DcMotor.class, "RBack");
-        leftArm = hwMap.get(DcMotor.class, "leftArm");
-        rightArm = hwMap.get(DcMotor.class, "rightArm");
-        Joint = hwMap.get(DcMotor.class, "Joint");
 
 
 
-        rightClaw = hwMap.get(Servo.class, "RClaw");
+
 
 
 
@@ -92,11 +85,8 @@ public class Hardware_6407 {
 
         LFront.setDirection(DcMotor.Direction.FORWARD);
         LBack.setDirection(DcMotor.Direction.FORWARD);
-        RFront.setDirection(DcMotor.Direction.REVERSE);
+        RFront.setDirection(DcMotor.Direction.FORWARD);
         RBack.setDirection(DcMotor.Direction.REVERSE);
-        rightArm.setDirection(DcMotor.Direction.REVERSE);
-        leftArm.setDirection(DcMotor.Direction.FORWARD);
-        Joint.setDirection(DcMotor.Direction.FORWARD);
 
         // Set all motors to zero power
         LFront.setPower(0);

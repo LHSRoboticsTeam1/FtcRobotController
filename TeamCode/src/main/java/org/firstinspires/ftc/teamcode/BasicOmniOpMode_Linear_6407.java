@@ -33,6 +33,7 @@ import com.qualcomm.hardware.motors.RevRoboticsCoreHexMotor;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -171,10 +172,10 @@ public class BasicOmniOpMode_Linear_6407 extends LinearOpMode {
 
             }
 
-            LFront.setDirection(DcMotor.Direction.FORWARD);
+            LFront.setDirection(DcMotor.Direction.REVERSE);
             LBack.setDirection(DcMotor.Direction.REVERSE);
             RFront.setDirection(DcMotor.Direction.REVERSE);
-            RBack.setDirection(DcMotor.Direction.REVERSE);
+            RBack.setDirection(DcMotor.Direction.FORWARD);
 
 
             // This is test code:
