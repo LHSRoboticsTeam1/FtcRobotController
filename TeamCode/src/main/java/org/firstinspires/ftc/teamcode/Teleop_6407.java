@@ -25,10 +25,11 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 @TeleOp(name="Teleop_6407", group="Iterative Opmode")
 //@Disabled
-public class Teleop_6407 extends OpMode {
+public class Teleop_6407 extends LinearOpMode {
     // Declare OpMode members.
+
     private ElapsedTime runtime = new ElapsedTime();
-    Hardware_6407 robot = new Hardware_6407();   // Use a 7615's hardware
+    private HardwareForRObot robot;
 
     boolean isLeftBumper1Pressed = false;
     boolean isRightBumper1Pressed = false;
@@ -36,163 +37,23 @@ public class Teleop_6407 extends OpMode {
 
     //Code to run ONCE when the driver hits INIT
     @Override
-    public void init() {
+    public void runOpMode () {
+        robot = new HardwareForRObot(this);
+        robot.init();
         telemetry.addData("Status", "Initialized");
-        robot.init(hardwareMap);
-    }
+        telemetry.update();
 
-    //Code to run REPEATEDLY after the driver hits INIT, but before they hit PLAY
-    @Override
-    public void init_loop() {
-    }
+        waitForStart();
+        
+        while (opModeIsActive()) {
+            robot.manuallyDriveRobot(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x);
 
-    //code to run ONCE when the driver hits PLAY
-    @Override
-    public void start() {
-        runtime.reset();
-    }
-
-    Orientation angles;
-
-    //Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
-    @Override
-    public void loop() {
-        double r = Math.hypot(gamepad1.left_stick_x, gamepad1.left_stick_y);
-        double robotAngle = Math.atan2(gamepad1.left_stick_y, gamepad1.left_stick_x) - Math.PI / 4;
-        double rightX = gamepad1.right_stick_x * .5;
-        final double v1 = r * Math.cos(robotAngle) + rightX;
-        final double v2 = r * Math.sin(robotAngle) - rightX;
-        final double v3 = r * Math.sin(robotAngle) + rightX;
-        final double v4 = r * Math.cos(robotAngle) - rightX;
-
-        robot.RFront.setPower(v1);
-        robot.LFront.setPower(v2);
-        robot.RBack.setPower(v3);
-        robot.LBack.setPower(v4);
-
-        double elvatorUpSpeed = .5;
-        double elvatorDownSpeed = .2;
-
-
-
-
-
-
-
-/*
-        if (gamepad2.dpad_left) {
-            //robot.Snoopy.setPosition(.7);
-
-        }
-
-        if (gamepad2.dpad_right){
-            //robot.Snoopy.setPosition(.3);
-
-        }
-
-        if (gamepad1.dpad_up){
-            //robot.Lulu.setPosition(.7);
-            //robot.Fluffy.setPosition(0.2);
-        }
-
-        if(gamepad1.dpad_down){
-            //robot.Lulu.setPosition(.2);
-            //robot.Fluffy.setPosition(.7);
-
-        }
-
-        //if(gamepad1.dpad_left) {
-            //robot.Kenny.setPosition(.6);
-
-        //}
-        //if(gamepad1.dpad_right){
-            //robot.Kenny.setPosition(.1);
-        //}
-
-
-
-        while (gamepad1.y) {
-            robot.Elevator1.setPower(elvatorUpSpeed);
-            robot.Elevator2.setPower(elvatorUpSpeed);
-            robot.Elevator3.setPower(elvatorUpSpeed);
-        }
-
-        while (gamepad1.x) {
-            robot.Elevator1.setPower(-1);
-            robot.Elevator2.setPower(-1);
-            robot.Elevator3.setPower(-1);
-        }
-
-        while (gamepad1.a) {
-            robot.Elevator1.setPower(-elvatorDownSpeed);
-            robot.Elevator2.setPower(-elvatorDownSpeed);
-            robot.Elevator3.setPower(-elvatorDownSpeed);
-        }
-
-
-        if ( !gamepad1.y && !gamepad1.a) {
-            robot.Elevator1.setPower(0);
-            robot.Elevator2.setPower(0);
-            robot.Elevator3.setPower(0);
-        }
-
-        double elevatorUp       = .25;
-        double elevatorDown     = .8;
-
-        if (gamepad1.dpad_up) {
-            robot.ElevatorLeft.setPosition(elevatorUp);
-            robot.ElevatorRight.setPosition(elevatorUp);
-        }
-
-        if (gamepad1.dpad_down) {
-            robot.ElevatorLeft.setPosition(elevatorDown);
-            robot.ElevatorRight.setPosition(elevatorDown);
-        }
-
-        if (gamepad1.dpad_left){
-            robot.IntakeLeft.setPosition(.5);
-            robot.IntakeRight.setPosition(.5);
-        }
-
-        if (gamepad1.dpad_right) {
-            robot.IntakeLeft.setPosition(.9);
-            robot.IntakeRight.setPosition(.9);
-        }
-
-        if (!isRightBumper1Pressed && gamepad1.right_bumper)  {
-            if (isIntakeOn) {
-                robot.Intake.setPower(1);
-                isIntakeOn = false;
-            } else {
-                robot.Intake.setPower(0);
-                isIntakeOn = true;
+            if (gamepad1.y) {
+                robot.releaseDrone();
             }
-            isRightBumper1Pressed = true;
-        } else if (!gamepad1.right_bumper){
-            isRightBumper1Pressed = false;
         }
-
-        if (!isLeftBumper1Pressed && gamepad1.left_bumper)  {
-            if (isIntakeOn) {
-                robot.Intake.setPower(-.25);
-                isIntakeOn = false;
-            } else {
-                robot.Intake.setPower(0);
-                isIntakeOn = true;
-            }
-            isLeftBumper1Pressed = true;
-        } else if (!gamepad1.left_bumper){
-            isLeftBumper1Pressed = false;
-        }
-
-
-*/
+        robot.shutDown();
     }
-
-
-
-
-
 
     String formatAngle (AngleUnit angleUnit,double angle){
         return formatDegrees(AngleUnit.DEGREES.fromUnit(angleUnit, angle));
@@ -201,9 +62,5 @@ public class Teleop_6407 extends OpMode {
     String formatDegrees ( double degrees){
         return String.format(Locale.getDefault(), "%.1f", AngleUnit.DEGREES.normalize(degrees));
     }
-    //Code to run ONCE after the driver hits STOP
-    @Override public void stop () {
-    }
-
 
 }

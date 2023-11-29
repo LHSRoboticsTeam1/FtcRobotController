@@ -20,6 +20,7 @@ public class Hardware_6407 {
     public DcMotor LBack = null;
     public DcMotor RFront = null;
     public DcMotor RBack = null;
+    public Servo Drone = null;
 
 
 
@@ -37,7 +38,7 @@ public class Hardware_6407 {
     //   public DcMotor ArmBottom       = null;
     //   public DcMotor ArmTop       = null;
 
-    public Servo    rightClaw   = null;
+
 
     /* local OpMode members. */
     HardwareMap hwMap = null;
@@ -60,8 +61,11 @@ public class Hardware_6407 {
         LBack  = hwMap.get(DcMotor.class, "LBack");
         RFront = hwMap.get(DcMotor.class, "RFront");
         RBack = hwMap.get(DcMotor.class, "RBack");
+        Drone = hwMap.get(Servo.class, "Drone");
 
 
+        // Set drone  to starting position power
+        Drone.setPosition(.3);
 
 
 
