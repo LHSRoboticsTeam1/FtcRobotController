@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -51,6 +51,30 @@ public class Teleop_6407 extends LinearOpMode {
             if (gamepad1.y) {
                 robot.releaseDrone();
             }
+
+            if (gamepad1.b) {
+                robot.raisePully();
+
+
+            }
+            if (gamepad1.a) {
+                robot.lowerPully();
+
+
+            }
+            if (!gamepad1.a && !gamepad1.b) {
+
+                robot.stoppully();
+
+
+            }
+
+            if (gamepad1.start) {
+                robot.hangrobot();
+            }
+  
+
+
         }
         robot.shutDown();
     }

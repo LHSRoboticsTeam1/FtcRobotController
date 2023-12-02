@@ -33,6 +33,12 @@ public class HardwareForRObot {
     private DcMotor rightFrontWheel;
     private DcMotor leftRearWheel;
     private DcMotor rightRearWheel;
+
+    private DcMotor pully1;
+
+
+
+
     private WebcamName webCam;
 
     // Define other HardwareDevices as needed.
@@ -68,6 +74,7 @@ public class HardwareForRObot {
     public void init() {
         initWheelMotors();
         initServos();
+        initpullys();
         //initTfod();
         //initVisionPortal();
         myOpMode.telemetry.addData(">", "Hardware Initialized");
@@ -94,6 +101,7 @@ public class HardwareForRObot {
         rightFrontWheel = myOpMode.hardwareMap.get(DcMotor.class, "RFront");
         leftRearWheel = myOpMode.hardwareMap.get(DcMotor.class, "LBack");
         rightRearWheel = myOpMode.hardwareMap.get(DcMotor.class, "RBack");
+
 
         // To drive forward, most robots need the motors on one side to be reversed,
         // because the axles point in opposite directions.
@@ -125,6 +133,13 @@ public class HardwareForRObot {
         // Define and initialize ALL installed servos.
         Drone = myOpMode.hardwareMap.get(Servo.class, "Drone");
         Drone.setPosition(READY_LAUNCH_SERVO);
+    }
+
+    private void initpullys() {
+        pully1 = myOpMode.hardwareMap.get(DcMotor.class, "leftpully");
+
+
+
     }
 
 
@@ -347,4 +362,13 @@ public class HardwareForRObot {
     public void releaseDrone() {
         Drone.setPosition(LAUNCH_SERVO);
     }
+    public void raisePully() {
+        pully1.setPower(.7);
+    }
+    public void lowerPully() {
+        pully1.setPower(-.7);
+    }
+    public void stoppully() {pully1.setPower(0);}
+   public void hangrobot() {pully1.setPower(-.7);}
+
 }
