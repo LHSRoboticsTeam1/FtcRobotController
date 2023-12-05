@@ -52,12 +52,12 @@ public class Teleop_6407 extends LinearOpMode {
                 robot.releaseDrone();
             }
 
-            if (gamepad1.b) {
+            if (gamepad1.a) {
                 robot.raisePully();
 
 
             }
-            if (gamepad1.a) {
+            if (gamepad1.b) {
                 robot.lowerPully();
 
 

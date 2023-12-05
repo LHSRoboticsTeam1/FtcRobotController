@@ -10,6 +10,7 @@ public class ParkBackstageFrontRed extends LinearOpMode {
 
         HardwareForRObot robot = new HardwareForRObot(this);
         robot.init();
+       // robot.holdDrone();
         waitForStart();
         robot.autoDriveRobot(-80,  -80 );
         robot.autoDriveRobot( -35 ,  35 );
