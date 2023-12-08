@@ -3,10 +3,13 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
+
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.tfod.TfodProcessor;
@@ -35,6 +38,8 @@ public class HardwareForRObot {
     private DcMotor rightRearWheel;
 
     private DcMotor pully1;
+    private DistanceSensor leftSensor;
+    private DistanceSensor rightSensor;
 
 
 
@@ -75,6 +80,7 @@ public class HardwareForRObot {
         initWheelMotors();
         initServos();
         initpullys();
+        initsensor();
         //initTfod();
         //initVisionPortal();
         myOpMode.telemetry.addData(">", "Hardware Initialized");
@@ -141,7 +147,12 @@ public class HardwareForRObot {
 
 
     }
+private void initsensor() {
+        leftSensor = myOpMode.hardwareMap.get(DistanceSensor.class, "LSensor");
+        rightSensor = myOpMode.hardwareMap.get(DistanceSensor.class, "RSensor");
 
+
+}
 
     /**
      * Initialize the TensorFlow Object Detection processor.
@@ -292,7 +303,7 @@ public class HardwareForRObot {
         }
 
         setPowerAllWheels(0); //Whoa.
-        myOpMode.telemetry.setAutoClear(true);
+      //  myOpMode.telemetry.setAutoClear(true);
     }
     public void parkRobot() {
 
@@ -355,6 +366,21 @@ public class HardwareForRObot {
         offset = Range.clip(offset, -0.5, 0.5);
         rightHand.setPosition(MID_SERVO - offset);
     }
+    public double findLocationLeft() {
+        double distance = leftSensor.getDistance(DistanceUnit.CM);
+        //myOpMode.telemetry.addData("distance left", "%.0f", distance);
+        //myOpMode.telemetry.update();
+
+        return distance;
+    }
+    public double findLocationRight() {
+        double distance = rightSensor.getDistance(DistanceUnit.CM);
+       // myOpMode.telemetry.addData("distance right", "%.0f", distance);
+        //myOpMode.telemetry.update();
+        return distance;
+    }
+
+
 
     /**
      * Move Drone servo so that drone is released.
