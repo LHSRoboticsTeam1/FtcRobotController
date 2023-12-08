@@ -62,8 +62,8 @@ public class HardwareForRObot {
 
     static final double DEFAULT_WHEEL_MOTOR_SPEED = .4;
     public static final double MID_SERVO       =  0.5 ;
-    public static final double READY_LAUNCH_SERVO =  .8 ;
-    public static final double LAUNCH_SERVO = .5;
+    public static final double READY_LAUNCH_SERVO =  .3 ;
+    public static final double LAUNCH_SERVO = .3;
     public static final double HAND_SPEED      =  0.02 ;  // sets rate to move servo
     public static final double ARM_UP_POWER    =  0.45 ;
     public static final double ARM_DOWN_POWER  = -0.45 ;
@@ -85,6 +85,7 @@ public class HardwareForRObot {
         //initVisionPortal();
         myOpMode.telemetry.addData(">", "Hardware Initialized");
         myOpMode.telemetry.update();
+        Drone.setPosition(.8);
     }
 
     /**
@@ -138,7 +139,7 @@ public class HardwareForRObot {
     private void initServos() {
         // Define and initialize ALL installed servos.
         Drone = myOpMode.hardwareMap.get(Servo.class, "Drone");
-        Drone.setPosition(READY_LAUNCH_SERVO);
+        Drone.setPosition(.3);
     }
 
     private void initpullys() {
@@ -229,7 +230,7 @@ private void initsensor() {
         leftRearWheel.setPower(v4);
 
         if(myOpMode.gamepad1.y)
-            Drone.setPosition(.5);
+            Drone.setPosition(.7);
     }
 */
     /**
@@ -396,5 +397,6 @@ private void initsensor() {
     }
     public void stoppully() {pully1.setPower(0);}
    public void hangrobot() {pully1.setPower(-.7);}
+  //public void holdDrone() {Drone.setPosition(.8);}
 
 }
