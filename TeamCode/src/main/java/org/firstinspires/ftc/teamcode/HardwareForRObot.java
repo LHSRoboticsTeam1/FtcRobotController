@@ -1,8 +1,10 @@
 package org.firstinspires.ftc.teamcode;
 
 
+import com.qualcomm.hardware.motors.GoBILDA5202Series;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorControllerEx;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
@@ -40,6 +42,7 @@ public class HardwareForRObot {
     private DcMotor pully1;
     private DistanceSensor leftSensor;
     private DistanceSensor rightSensor;
+    private DcMotor arm;
 
 
 
@@ -81,11 +84,13 @@ public class HardwareForRObot {
         initServos();
         initpullys();
         initsensor();
+        initarm();
         //initTfod();
         //initVisionPortal();
         myOpMode.telemetry.addData(">", "Hardware Initialized");
         myOpMode.telemetry.update();
         Drone.setPosition(.8);
+        arm.setPower(0);
     }
 
     /**
@@ -131,7 +136,10 @@ public class HardwareForRObot {
         leftRearWheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         rightRearWheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
     }
+private void initarm() {
+        arm = myOpMode.hardwareMap.get(DcMotor.class, "Arm");
 
+}
 
     /**
      * Initialize all servos.
@@ -154,6 +162,7 @@ private void initsensor() {
 
 
 }
+
 
     /**
      * Initialize the TensorFlow Object Detection processor.
@@ -262,9 +271,9 @@ private void initsensor() {
         int rightInchesToCPI = (int) (rightInches * COUNTS_PER_INCH);
 
         int leftFrontTarget = leftFrontWheel.getCurrentPosition() + leftInchesToCPI;
-        int leftRearTarget = leftFrontWheel.getCurrentPosition() + leftInchesToCPI;
-        int rightFrontTarget = leftFrontWheel.getCurrentPosition() + rightInchesToCPI;
-        int rightRearTarget = leftFrontWheel.getCurrentPosition() + rightInchesToCPI;
+        int leftRearTarget = rightFrontWheel.getCurrentPosition() + leftInchesToCPI;
+        int rightFrontTarget = rightRearWheel.getCurrentPosition() + rightInchesToCPI;
+        int rightRearTarget = leftRearWheel.getCurrentPosition() + rightInchesToCPI;
 
         leftFrontWheel.setTargetPosition(leftFrontTarget);
         leftRearWheel.setTargetPosition(leftRearTarget);
@@ -383,9 +392,11 @@ private void initsensor() {
 
 
 
+
     /**
      * Move Drone servo so that drone is released.
      */
+    public void resetDrone() {Drone.setPosition(.3);}
     public void releaseDrone() {
         Drone.setPosition(LAUNCH_SERVO);
     }
@@ -398,5 +409,7 @@ private void initsensor() {
     public void stoppully() {pully1.setPower(0);}
    public void hangrobot() {pully1.setPower(-.7);}
   //public void holdDrone() {Drone.setPosition(.8);}
+    public void raiseArm() {arm.setPower(1);}
+    public void lowerArm() {arm.setPower(-1);}
 
 }

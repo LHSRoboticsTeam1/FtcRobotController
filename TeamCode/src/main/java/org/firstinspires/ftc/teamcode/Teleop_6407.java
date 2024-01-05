@@ -51,30 +51,33 @@ public class Teleop_6407 extends LinearOpMode {
             if (gamepad1.y) {
                 robot.releaseDrone();
             }
-
             if (gamepad1.a) {
                 robot.raisePully();
-
-
             }
             if (gamepad1.b) {
                 robot.lowerPully();
-
-
             }
             if (!gamepad1.a && !gamepad1.b) {
-
                 robot.stoppully();
-
-
             }
-
             if (gamepad1.start) {
                 robot.hangrobot();
             }
-
-
-
+            if (gamepad1.dpad_up) {
+                robot.resetDrone();
+            }
+            if (gamepad1.left_bumper)
+            {
+                robot.raiseArm();
+            }
+            if (gamepad1.right_bumper)
+            {
+                robot.lowerArm();
+            }
+            if (!gamepad2.left_bumper && !gamepad1.right_bumper);
+            {
+                robot.setArmPower(0);
+            }
         }
         robot.shutDown();
     }
