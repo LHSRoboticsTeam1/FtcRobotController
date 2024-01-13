@@ -3,8 +3,8 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-@Autonomous(name = "ParkBackstageBlue")
-public class ParkBackstageBackBlue extends LinearOpMode {
+@Autonomous(name = "ParkBackstageRed")
+public class ParkBackstageBackRed extends LinearOpMode {
 
     HardwareForRObot robot;
     @Override
@@ -21,19 +21,23 @@ public class ParkBackstageBackBlue extends LinearOpMode {
             if (propNumber == robot.CENTER) {
                 robot.autoDriveRobot(-6,  -6 );//park
                 robot.autoDriveRobot(30, 30);//backs up from pixel
-                robot.autoDriveRobot(30,  -30 );// turn
+                robot.autoDriveRobot(-30,  30 );// turn
                 robot.autoDriveRobot(-100,  -100 );//park
+
+
             }
-             else if (propNumber == robot.RIGHT) {
-                robot.autoDriveRobot(-30,  30);// turn Right?
-                robot.autoDriveRobot(-15,  -15); //puts pixel on stripe
+             else if (propNumber == robot.LEFT) {
+                robot.autoDriveRobot(30,  -30);// turn Right?
+                robot.autoDriveRobot(-10,  -10); //puts pixel on stripe
                 robot.autoDriveRobot(50,  50);//backs up from pixel
             }
-            else if (propNumber == robot.LEFT) {
-                robot.autoDriveRobot(30,  -30);// turn left?
-                sleep(2000);
-                robot.autoDriveRobot(-10,  -10); //puts pixel on stripe
-        }
+            else if (propNumber == robot.RIGHT) {
+
+                    robot.autoDriveRobot(-30, 30);// turn left
+                    sleep(2000);
+                    robot.autoDriveRobot(-10, -10); //puts pixel on stripe
+                }
+            }
             // while (opModeIsActive()) {
             //  double leftDistance = robot.findLocationLeft();
             // double rightDistance = robot.findLocationRight();
@@ -47,5 +51,5 @@ public class ParkBackstageBackBlue extends LinearOpMode {
         }
     }
 
-    }
+
 

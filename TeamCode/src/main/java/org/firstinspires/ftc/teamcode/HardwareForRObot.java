@@ -44,7 +44,9 @@ public class HardwareForRObot {
     private DistanceSensor rightSensor;
     private DcMotor arm;
 
-
+    static final int LEFT = 1;
+    static final int RIGHT = 2;
+    static final int CENTER = 3;
 
 
     private WebcamName webCam;
@@ -52,7 +54,7 @@ public class HardwareForRObot {
     // Define other HardwareDevices as needed.
     private DcMotor armMotor;
     private Servo   Drone;
-    private Servo   rightHand;
+    private Servo   Claw;
     private TfodProcessor tfod;
     private VisionPortal visionPortal;
 
@@ -84,13 +86,12 @@ public class HardwareForRObot {
         initServos();
         initpullys();
         initsensor();
-        initarm();
+        initArm();
         //initTfod();
         //initVisionPortal();
         myOpMode.telemetry.addData(">", "Hardware Initialized");
         myOpMode.telemetry.update();
         Drone.setPosition(.8);
-        arm.setPower(0);
     }
 
     /**
@@ -115,6 +116,7 @@ public class HardwareForRObot {
         rightRearWheel = myOpMode.hardwareMap.get(DcMotor.class, "RBack");
 
 
+
         // To drive forward, most robots need the motors on one side to be reversed,
         // because the axles point in opposite directions.
         // Note: The settings here assume direct drive on left and right wheels.
@@ -123,6 +125,8 @@ public class HardwareForRObot {
         leftRearWheel.setDirection(DcMotor.Direction.FORWARD);
         rightFrontWheel.setDirection(DcMotor.Direction.FORWARD);
         rightRearWheel.setDirection(DcMotor.Direction.REVERSE);
+
+        setRunModeForAllWheels(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         // If there are encoders connected, switch to RUN_USING_ENCODER mode for greater accuracy
         leftFrontWheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -136,9 +140,8 @@ public class HardwareForRObot {
         leftRearWheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         rightRearWheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
     }
-private void initarm() {
+private void initArm() {
         arm = myOpMode.hardwareMap.get(DcMotor.class, "Arm");
-
 }
 
     /**
@@ -148,6 +151,7 @@ private void initarm() {
         // Define and initialize ALL installed servos.
         Drone = myOpMode.hardwareMap.get(Servo.class, "Drone");
         Drone.setPosition(.3);
+        Claw = myOpMode.hardwareMap.get(Servo.class, "Claw");
     }
 
     private void initpullys() {
@@ -363,9 +367,9 @@ private void initsensor() {
      * @param power driving power (-1.0 to 1.0)
      */
 
-    public void setArmPower(double power) {
-        armMotor.setPower(power);
-    }
+   public void setArmPower(double power) {
+       arm.setPower(power);
+   }
 
     /**
      * Send the two hand-servos to opposing (mirrored) positions, based on the passed offset.
@@ -374,7 +378,7 @@ private void initsensor() {
      */
     public void setHandPositions(double offset) {
         offset = Range.clip(offset, -0.5, 0.5);
-        rightHand.setPosition(MID_SERVO - offset);
+        Claw.setPosition(MID_SERVO - offset);
     }
     public double findLocationLeft() {
         double distance = leftSensor.getDistance(DistanceUnit.CM);
@@ -390,13 +394,39 @@ private void initsensor() {
         return distance;
     }
 
+    public int PropNumber() {
+        double leftDistance = findLocationLeft();
+        double rightDistance = findLocationRight();
+        int propNumber;
 
+        if (leftDistance <= 10) {
+
+            propNumber = LEFT;
+
+        }
+        else if (rightDistance <= 10) {
+
+            propNumber = RIGHT;
+
+
+        }
+        else {
+
+            propNumber = CENTER;
+
+        }
+        myOpMode.telemetry.addData("prop place",propNumber);
+        myOpMode.telemetry.addData("right sensor", rightDistance);
+        myOpMode.telemetry.addData("left sensor", leftDistance);
+        myOpMode.telemetry.update();
+        return propNumber;
+
+    }
 
 
     /**
      * Move Drone servo so that drone is released.
      */
-    public void resetDrone() {Drone.setPosition(.3);}
     public void releaseDrone() {
         Drone.setPosition(LAUNCH_SERVO);
     }
@@ -409,7 +439,12 @@ private void initsensor() {
     public void stoppully() {pully1.setPower(0);}
    public void hangrobot() {pully1.setPower(-.7);}
   //public void holdDrone() {Drone.setPosition(.8);}
-    public void raiseArm() {arm.setPower(1);}
-    public void lowerArm() {arm.setPower(-1);}
+    public void raiseArm() {arm.setPower(1.5);}
+    public void lowerArm() {arm.setPower(-1.5);}
+
+    public void closeClaw() {Claw.setPosition(.4);}
+    public void openClaw() {Claw.setPosition(.25);}
+
+    public void resetDrone() {Drone.setPosition(.8);}
 
 }
