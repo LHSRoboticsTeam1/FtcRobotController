@@ -143,7 +143,9 @@ public class HardwareForRObot {
 private void initArm() {
         arm = myOpMode.hardwareMap.get(DcMotor.class, "Arm");
 }
-
+        public void resetEncoders() {
+            setRunModeForAllWheels(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        }
     /**
      * Initialize all servos.
      */
