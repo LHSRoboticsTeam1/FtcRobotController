@@ -29,7 +29,7 @@ public class Teleop_6407 extends LinearOpMode {
     // Declare OpMode members.
 
     private ElapsedTime runtime = new ElapsedTime();
-    private HardwareForRObot robot;
+    private HardwareForRobot robot;
 
     boolean isLeftBumper1Pressed = false;
     boolean isRightBumper1Pressed = false;
@@ -38,7 +38,7 @@ public class Teleop_6407 extends LinearOpMode {
     //Code to run ONCE when the driver hits INIT
     @Override
     public void runOpMode () {
-        robot = new HardwareForRObot(this);
+        robot = new HardwareForRobot(this);
         robot.init();
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -51,18 +51,16 @@ public class Teleop_6407 extends LinearOpMode {
             if (gamepad1.y) {
                 robot.releaseDrone();
             }
-            if (gamepad1.dpad_down) {
+            if (gamepad1.start) {
                 robot.raisePully();
             }
-            if (gamepad1.dpad_up) {
+            if (gamepad1.back) {
                 robot.lowerPully();
             }
             if (!gamepad1.dpad_down && !gamepad1.dpad_up) {
                 robot.stoppully();
             }
-            if (gamepad1.start) {
-                robot.hangrobot();
-            }
+
             if (gamepad1.left_bumper)
             {
                 robot.raiseArm();

@@ -1,10 +1,8 @@
 package org.firstinspires.ftc.teamcode;
 
 
-import com.qualcomm.hardware.motors.GoBILDA5202Series;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorControllerEx;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
@@ -28,7 +26,7 @@ import java.util.List;
  * This is why the objects are declared "private".
  */
 
-public class HardwareForRObot {
+public class HardwareForRobot {
     /* Declare OpMode members. */
     private OpMode myOpMode = null;   // gain access to methods in the calling OpMode.
 
@@ -74,7 +72,7 @@ public class HardwareForRObot {
     public static final double ARM_DOWN_POWER  = -0.45 ;
 
     // The one and only constructor requires a reference to an OpMode.
-    public HardwareForRObot(OpMode opmode) {
+    public HardwareForRobot(OpMode opmode) {
         myOpMode = opmode;
     }
 
@@ -154,6 +152,7 @@ private void initArm() {
         Drone = myOpMode.hardwareMap.get(Servo.class, "Drone");
         Drone.setPosition(.3);
         Claw = myOpMode.hardwareMap.get(Servo.class, "Claw");
+        closeClaw();
     }
 
     private void initpullys() {
@@ -318,9 +317,34 @@ private void initsensor() {
 
         }
 
+
+
         setPowerAllWheels(0); //Whoa.
       //  myOpMode.telemetry.setAutoClear(true);
     }
+
+    public void raiseArm(int rotation, double speed){
+        int rotationToCPI = (int) (rotation * COUNTS_PER_INCH);
+
+        int armTarget = arm.getCurrentPosition() + rotationToCPI;
+        arm.setTargetPosition(armTarget);
+        setRunModeForArm(DcMotor.RunMode.RUN_TO_POSITION);
+        myOpMode.telemetry.setAutoClear(false);
+        myOpMode.telemetry.addData("Heading", "Current Arm Positions");
+        Telemetry.Item armItem = myOpMode.telemetry.addData("Arm",
+                arm.getCurrentPosition());
+        setPowerArm(speed);
+        while (arm.isBusy()){
+            armItem.setValue(arm.getCurrentPosition());
+            myOpMode.telemetry.update();
+        }
+        setPowerArm(0);
+
+
+
+    }
+
+
     public void parkRobot() {
 
     }
@@ -335,9 +359,24 @@ private void initsensor() {
     }
 
     /**
+     * raiseArm using DEFAULT_WHEEL_MOTOR_SPEED.
+     * @param rotation
+     */
+    public void raiseArm(int rotation) {
+        raiseArm(rotation, DEFAULT_WHEEL_MOTOR_SPEED);
+    }
+
+    /**
      * Set the RunMode for all wheel motors to the passed runMode.
      * @param runMode
      */
+
+
+
+    public void setRunModeForArm(DcMotor.RunMode runMode) {
+        arm.setMode(runMode);
+    }
+
     public void setRunModeForAllWheels(DcMotor.RunMode runMode) {
         leftFrontWheel.setMode(runMode);
         leftRearWheel.setMode(runMode);
@@ -349,6 +388,12 @@ private void initsensor() {
      * Set the Power for all wheels to the passed speed.
      * @param speed
      */
+
+    public void setPowerArm(double speed) {
+        double absoluteSpeed = Math.abs(speed);
+        arm.setPower(absoluteSpeed);
+    }
+
 
     public void setPowerAllWheels(double speed) {
         double absoluteSpeed = Math.abs(speed);
