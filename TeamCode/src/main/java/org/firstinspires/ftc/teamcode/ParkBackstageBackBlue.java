@@ -22,7 +22,7 @@ public class ParkBackstageBackBlue extends LinearOpMode {
             if (propNumber == robot.CENTER) {
                 robot.autoDriveRobot(-3,  -3 );//puts pixel on spike
                 robot.autoDriveRobot(12, 12);//backs up from pixel
-                robot.autoDriveRobot(30,  -30 );// turn
+                robot.turnToHeading(90, .4);
                 robot.raiseArm(-95);
                 robot.resetEncoders();
                 robot.autoDriveRobot(-47,  -47);//park
@@ -31,12 +31,12 @@ public class ParkBackstageBackBlue extends LinearOpMode {
                 robot.autoDriveRobot(5, 5);
             }
              else if (propNumber == robot.RIGHT) {
-                robot.autoDriveRobot(-30,  30);// turn right
+                robot.turnToHeading(-90, .4);
                 robot.resetEncoders();
                 robot.autoDriveRobot(-9,  -9); //puts pixel on stripe
                 robot.autoDriveRobot(25,  25);//backs up from pixel
                 robot.raiseArm(-95);
-                robot.autoDriveRobot(-60, 60);
+                robot.turnToHeading(90, .4);
                 robot.resetEncoders();
                 robot.autoDriveRobot(-27, -27);
                 robot.resetEncoders();
@@ -45,21 +45,21 @@ public class ParkBackstageBackBlue extends LinearOpMode {
                 robot.autoDriveRobot(5, 5);
             }
             else if (propNumber == robot.LEFT) {
-                robot.autoDriveRobot(30, -30);// turn right
+                robot.turnToHeading(90, .4);
                 robot.resetEncoders();
                 robot.autoDriveRobot(-8, -8); //puts pixel on stripe
                 robot.autoDriveRobot(9, 9); // backs away from pixel
-                robot.autoDriveRobot(-30, 30); // turns left
+                robot.turnToHeading(0, .4);
                 robot.resetEncoders();
                 robot.autoDriveRobot(-30, -30); // moves away from spike area
-                robot.autoDriveRobot(30, -30); // turn to backstage
+                robot.turnToHeading(90, .4);
                 robot.raiseArm(-95);
                 robot.resetEncoders();
                 robot.autoDriveRobot(-35, -35); // drive towards backstage
-                robot.autoDriveRobot(30, -30);
+                robot.turnToHeading(180, .4);
                 robot.resetEncoders();
                 robot.autoDriveRobot(-33, -33);
-                robot.autoDriveRobot(-30, 30);
+                robot.turnToHeading(90, .4);
                 robot.resetEncoders();
                 robot.autoDriveRobot(-15, -15);
                 robot.openClaw();
