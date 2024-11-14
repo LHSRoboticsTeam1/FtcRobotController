@@ -12,7 +12,7 @@ public class FrontPlaceRed extends LinearOpMode {
         robot.init();
         waitForStart();
         if (opModeIsActive()) {
-            robot.closeClaw();
+          /*  robot.closeClaw();
             robot.autoDriveRobot(-35, -35);
             sleep(2000);
             int propNumber = robot.PropNumber();
@@ -65,7 +65,7 @@ public class FrontPlaceRed extends LinearOpMode {
                 robot.autoDriveRobot(5, 5);
 
             }
-
+*/
         }
 
 

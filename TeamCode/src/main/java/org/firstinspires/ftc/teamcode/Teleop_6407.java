@@ -48,42 +48,59 @@ public class Teleop_6407 extends LinearOpMode {
         while (opModeIsActive()) {
             robot.manuallyDriveRobot(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x);
 
-            if (gamepad1.y) {
-                robot.releaseDrone();
+
+            if(gamepad2.dpad_down) {
+                robot.beltdown();
+
             }
-            if (gamepad2.dpad_down) {
-                robot.raisePully();
+            else if (gamepad2.dpad_up) {
+                robot.beltup();
             }
-            if (gamepad2.dpad_up) {
-                robot.lowerPully();
-            }
-            if (!gamepad1.dpad_down && !gamepad1.dpad_up) {
-                robot.stoppully();
-            }
+           else   {
+              robot.stopBelt();
+           }
 
             if (gamepad2.left_bumper)
             {
-                robot.raiseArm();
+                robot.jointUp();
             }
             if (gamepad2.right_bumper)
             {
-                robot.lowerArm();
+                robot.jointDown();
             }
             if (!gamepad2.left_bumper && !gamepad2.right_bumper)
             {
-                robot.setArmPower(0);
+                robot.stopJoint();
             }
             if (gamepad2.b)
             {
-               robot.openClaw();
+               robot.takeIn();
             }
             if (gamepad2.a)
             {
-                robot.closeClaw();
+                robot.takeOut();
             }
-            if (gamepad1.x)
+            if (gamepad2.dpad_right)
             {
-                robot.resetDrone();
+
+                robot.emptyBucket();
+
+            }
+            if (gamepad2.dpad_left)
+            {
+                robot.resetBucket();
+            }
+            if (gamepad2.x)
+            {
+                robot.spinIn();
+            }
+            if (gamepad2.y)
+            {
+                robot.spinOut();
+            }
+            if (!gamepad2.x && !gamepad2.y)
+            {
+                robot.spinStop();
             }
 
         }

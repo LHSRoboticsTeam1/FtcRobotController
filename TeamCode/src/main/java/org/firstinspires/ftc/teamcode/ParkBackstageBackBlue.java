@@ -15,6 +15,7 @@ public class ParkBackstageBackBlue extends LinearOpMode {
         //robot.holdDrone();
         waitForStart();
         if (opModeIsActive()) {
+            /*
             robot.closeClaw();
             robot.autoDriveRobot(-37, -37);
             sleep(2000);
@@ -77,7 +78,7 @@ public class ParkBackstageBackBlue extends LinearOpMode {
             // }
 
 
-
+*/
         }
         robot.shutDown();
     }

@@ -3,9 +3,8 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.ImuOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -14,7 +13,6 @@ import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.tfod.TfodProcessor;
@@ -53,19 +51,16 @@ public class HardwareForRobot {
     private DcMotor leftRearWheel;
     private DcMotor rightRearWheel;
 
-    private DcMotor pully1;
-    private DistanceSensor leftSensor;
-    private DistanceSensor rightSensor;
-    private DcMotor arm;
+    private DcMotor belt;
+    private DcMotor joint1;
+    private DcMotor joint2;
+private CRServo spin;
+    private Servo bucket;
 
-    static final int LEFT = 1;
-    static final int RIGHT = 2;
-    static final int CENTER = 3;
     private WebcamName webCam;
     // Define other HardwareDevices as needed.
-    private DcMotor armMotor;
-    private Servo   Drone;
-    private Servo   Claw;
+
+    private Servo   intakeServos;
     private TfodProcessor tfod;
     private VisionPortal visionPortal;
 
@@ -74,7 +69,15 @@ public class HardwareForRobot {
 
     static final double DEFAULT_WHEEL_MOTOR_SPEED = .4;
     public static final double MID_SERVO       =  0.5 ;
-    public static final double LAUNCH_SERVO = 0.1;
+    final static int Encoder_CPR = 1440;
+    final static int WHEEL_DIAMETER =4;
+    final static int DISTANCE = 24;
+
+    final static double CIRCUMFERENCE = Math.PI + WHEEL_DIAMETER;
+    final static double Rotations = DISTANCE / CIRCUMFERENCE;
+    final static double COUNTS = Encoder_CPR + Rotations;
+
+    public static final int BELT_SPEED = 1;
     public static final double HAND_SPEED      =  0.02 ;  // sets rate to move servo
     public static final double ARM_UP_POWER    =  0.45 ;
     public static final double ARM_DOWN_POWER  = -0.45 ;
@@ -91,8 +94,7 @@ public class HardwareForRobot {
         initWheelMotors();
         initServos();
         initpullys();
-        initsensor();
-        initArm();
+
         initIMU();
 
         myOpMode.telemetry.addData(">", "Hardware Initialized");
@@ -165,9 +167,6 @@ public class HardwareForRobot {
         leftRearWheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         rightRearWheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
     }
-private void initArm() {
-        arm = myOpMode.hardwareMap.get(DcMotor.class, "Arm");
-}
         public void resetEncoders() {
             setRunModeForAllWheels(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         }
@@ -176,24 +175,21 @@ private void initArm() {
      */
     private void initServos() {
         // Define and initialize ALL installed servos.
-        Drone = myOpMode.hardwareMap.get(Servo.class, "Drone");
-        Drone.setPosition(.7);
-        Claw = myOpMode.hardwareMap.get(Servo.class, "Claw");
-        closeClaw();
+        intakeServos = myOpMode.hardwareMap.get(Servo.class, "Wrist");
+        bucket = myOpMode.hardwareMap.get(Servo.class, "Bucket");
+        spin = myOpMode.hardwareMap.get(CRServo.class, "Intake");
     }
 
     private void initpullys() {
-        pully1 = myOpMode.hardwareMap.get(DcMotor.class, "leftpully");
-
+        belt = myOpMode.hardwareMap.get(DcMotor.class, "Slides");
+        joint1 = myOpMode.hardwareMap.get(DcMotor.class, "Arm");
 
 
     }
-private void initsensor() {
-        leftSensor = myOpMode.hardwareMap.get(DistanceSensor.class, "LSensor");
-        rightSensor = myOpMode.hardwareMap.get(DistanceSensor.class, "RSensor");
 
 
-}
+
+
 
 
     /**
@@ -432,7 +428,7 @@ private void initsensor() {
          //keep looping while we are still active, and not on heading.
         while (myOpMode.opModeIsActive() && (Math.abs(headingDelta) > 1)) {
             // Determine required steering to keep on heading
-            headingSpeedAdjustment = getHeadingCorrection(heading, .03);
+            headingSpeedAdjustment = getHeadingCorrection(heading, .01);
             // Clip the speed to the maximum permitted value.
             headingSpeedAdjustment = Range.clip(headingSpeedAdjustment, -speed, speed);
 
@@ -467,26 +463,7 @@ private void initsensor() {
         // Limit the result to +/- 1.0
         return Range.clip(headingError * gainFactor, -1, 1);
     }
-    public void raiseArm(int rotation, double speed){
-        int rotationToCPI = (int) (rotation * COUNTS_PER_INCH);
 
-        int armTarget = arm.getCurrentPosition() + rotationToCPI;
-        arm.setTargetPosition(armTarget);
-        setRunModeForArm(DcMotor.RunMode.RUN_TO_POSITION);
-        myOpMode.telemetry.setAutoClear(false);
-        myOpMode.telemetry.addData("Heading", "Current Arm Positions");
-        Telemetry.Item armItem = myOpMode.telemetry.addData("Arm",
-                arm.getCurrentPosition());
-        setPowerArm(speed);
-        while (arm.isBusy()){
-            armItem.setValue(arm.getCurrentPosition());
-            myOpMode.telemetry.update();
-        }
-        setPowerArm(0);
-
-
-
-    }
 
 
     public void parkRobot() {
@@ -502,13 +479,14 @@ private void initsensor() {
         autoDriveRobot(leftInches, rightInches, DEFAULT_WHEEL_MOTOR_SPEED);
     }
 
+
     /**
      * raiseArm using DEFAULT_WHEEL_MOTOR_SPEED.
      * @param rotation
      */
-    public void raiseArm(int rotation) {
-        raiseArm(rotation, DEFAULT_WHEEL_MOTOR_SPEED);
-    }
+    //public void raisebelt(int rotation) {
+       // raisebelt(rotation, );
+  //  }
 
     /**
      * Set the RunMode for all wheel motors to the passed runMode.
@@ -518,7 +496,7 @@ private void initsensor() {
 
 
     public void setRunModeForArm(DcMotor.RunMode runMode) {
-        arm.setMode(runMode);
+        belt.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 
     public void setRunModeForAllWheels(DcMotor.RunMode runMode) {
@@ -535,7 +513,7 @@ private void initsensor() {
 
     public void setPowerArm(double speed) {
         double absoluteSpeed = Math.abs(speed);
-        arm.setPower(absoluteSpeed);
+        belt.setPower(absoluteSpeed);
     }
 
 
@@ -559,7 +537,7 @@ private void initsensor() {
      */
 
    public void setArmPower(double power) {
-       arm.setPower(power);
+       belt.setPower(power);
    }
 
     /**
@@ -567,77 +545,34 @@ private void initsensor() {
      *
      * @param offset
      */
-    public void setHandPositions(double offset) {
-        offset = Range.clip(offset, -0.5, 0.5);
-        Claw.setPosition(MID_SERVO - offset);
-    }
-    public double findLocationLeft() {
-        double distance = leftSensor.getDistance(DistanceUnit.CM);
-        //myOpMode.telemetry.addData("distance left", "%.0f", distance);
-        //myOpMode.telemetry.update();
-
-        return distance;
-    }
-    public double findLocationRight() {
-        double distance = rightSensor.getDistance(DistanceUnit.CM);
-       // myOpMode.telemetry.addData("distance right", "%.0f", distance);
-        //myOpMode.telemetry.update();
-        return distance;
-    }
-
-    public int PropNumber() {
-        double leftDistance = findLocationLeft();
-        double rightDistance = findLocationRight();
-        int propNumber;
-
-        if (leftDistance <= 10) {
-
-            propNumber = LEFT;
-
-        }
-        else if (rightDistance <= 10) {
-
-            propNumber = RIGHT;
 
 
-        }
-        else {
 
-            propNumber = CENTER;
 
-        }
-        myOpMode.telemetry.addData("prop place",propNumber);
-        myOpMode.telemetry.addData("right sensor", rightDistance);
-        myOpMode.telemetry.addData("left sensor", leftDistance);
-        myOpMode.telemetry.update();
-        return propNumber;
 
-    }
 
 
     /**
      * Move Drone servo so that drone is released.
      */
-    public void releaseDrone() {
-        Drone.setPosition(LAUNCH_SERVO);
-    }
-    public void raisePully() {
-        pully1.setPower(.7);
-    }
-    public void lowerPully() {
-        pully1.setPower(-.7);
-    }
-    public void stoppully() {pully1.setPower(0);}
-   public void hangrobot() {pully1.setPower(-.7);}
-  //public void holdDrone() {Drone.setPosition(.8);}
-    public void raiseArm() {arm.setPower(1.5);}
-    public void lowerArm() {arm.setPower(-1.5);}
 
-    public void closeClaw() {Claw.setPosition(.4);}
-    public void openClaw() {Claw.setPosition(.25);}
 
-    public void resetDrone() {Drone.setPosition(.8);}
+    public void beltup() {belt.setPower(-1);}
+    public void beltdown() {belt.setPower(1);}
+public void  stopBelt() {belt.setPower(-.1);}
+    public void jointDown() {joint1.setPower(-1.5); }
+    public void jointUp() {joint1.setPower(1.5); }
+    public void stopJoint() {joint1.setPower(0); }
+    public void joint2Down() {joint2.setPower(-1.5);}
+    public void takeIn() {intakeServos.setPosition(.9);}
+    public void takeOut() {intakeServos.setPosition(.3);}
+    public void hitBar() {intakeServos.setPosition(.6);}
+    public void emptyBucket() {bucket.setPosition(.45);}
+    public void resetBucket() {bucket.setPosition(0);}
+    public void spinIn() {spin.setPower(1);}
+    public void spinStop() {spin.setPower(0);}
 
+    public void spinOut() {spin.setPower(-1);}
     public class HeadingTelemetry {
         private Telemetry.Item leftTargetPositionsItem;
         private Telemetry.Item rightTargetPositionsItem;
