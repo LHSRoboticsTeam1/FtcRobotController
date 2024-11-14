@@ -5,6 +5,7 @@ import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.ImuOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -148,10 +149,10 @@ private CRServo spin;
         // because the axles point in opposite directions.
         // Note: The settings here assume direct drive on left and right wheels.
         // Gear Reduction or 90 Deg drives may require direction flips
-        leftFrontWheel.setDirection(DcMotor.Direction.FORWARD);
-        leftRearWheel.setDirection(DcMotor.Direction.FORWARD);
-        rightFrontWheel.setDirection(DcMotor.Direction.FORWARD);
-        rightRearWheel.setDirection(DcMotor.Direction.REVERSE);
+        leftFrontWheel.setDirection(DcMotor.Direction.REVERSE);
+        leftRearWheel.setDirection(DcMotor.Direction.REVERSE);
+        rightFrontWheel.setDirection(DcMotor.Direction.REVERSE);
+        rightRearWheel.setDirection(DcMotor.Direction.FORWARD);
 
         setRunModeForAllWheels(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 

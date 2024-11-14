@@ -3,8 +3,8 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-@Autonomous(name = "FrontPlaceRed")
-public class FrontPlaceRed extends LinearOpMode {
+@Autonomous(name = "RedLeft")
+public class RedLeft extends LinearOpMode {
     @Override
     public void runOpMode() {
 ///
@@ -12,60 +12,36 @@ public class FrontPlaceRed extends LinearOpMode {
         robot.init();
         waitForStart();
         if (opModeIsActive()) {
-          /*  robot.closeClaw();
-            robot.autoDriveRobot(-35, -35);
-            sleep(2000);
-            int propNumber = robot.PropNumber();
-            if (propNumber == robot.CENTER) {
-                robot.autoDriveRobot(-5, -5);
-                robot.autoDriveRobot(36, 36);
-                robot.turnToHeading(-90, .4);
-                robot.resetEncoders();
-                robot.autoDriveRobot(-100, -100);
-                robot.openClaw();
-                sleep(1000);
-                robot.autoDriveRobot(5, 5);
+            robot.emptyBucket();
+            robot.takeOut();
+            robot.jointDown();
+            sleep(630);
+            robot.stopJoint();
+            robot.hitBar();
+            robot.autoDriveRobot(-15, -15);
+            sleep(200);
+            robot.beltup();
+            sleep(2200);
+            robot.stopBelt();
+            robot.autoDriveRobot(-10, -10);
+            robot.resetBucket();
+            robot.resetBucket();
+            sleep(600);
+            robot.autoDriveRobot(12,12);
+            robot.beltdown();
+            sleep(1600);
+            robot.stopBelt();
+            robot.resetEncoders();
+            robot.autoDriveRobot(-30,30);
 
-            }
-            else if (propNumber == robot.RIGHT) {
-
-                robot.turnToHeading(-90, .4);
-                robot.resetEncoders();
-                robot.autoDriveRobot(-10, -10); //puts pixel on stripe
-
-                robot.autoDriveRobot(20, 20);
-                robot.turnToHeading(-180, .4);
-                robot.resetEncoders();
-                robot.autoDriveRobot(-30, -30);
-                robot.turnToHeading(-90, .4);
-                robot.resetEncoders();
-                robot.autoDriveRobot(-110, -110);
-                robot.openClaw();
-                sleep(1000);
-                robot.autoDriveRobot(5, 5);
-
-
-            }
-            else if (propNumber == robot.LEFT) {
-
-                robot.autoDriveRobot(1, 1);
-                robot.resetEncoders();
-                robot.turnToHeading(90, .4);
-                robot.resetEncoders();
-                robot.autoDriveRobot(-10, -10); //puts pixel on stripe
-                robot.autoDriveRobot(11, 11);
-                robot.turnToHeading(180, .4);
-                robot.resetEncoders();
-                robot.autoDriveRobot(-30, -30);
-                robot.turnToHeading(-90, .4);
-                robot.resetEncoders();
-                robot.autoDriveRobot(-100, -100);
-                robot.openClaw();
-                sleep(1000);
-                robot.autoDriveRobot(5, 5);
-
-            }
-*/
+            robot.resetEncoders();
+            robot.autoDriveRobot(-80, -80);
+            robot.resetEncoders();
+            robot.autoDriveRobot(30,-30);
+            robot.resetEncoders();
+            robot.hitBar();
+            robot.autoDriveRobot(25, 25);
+            sleep(100000);
         }
 
 

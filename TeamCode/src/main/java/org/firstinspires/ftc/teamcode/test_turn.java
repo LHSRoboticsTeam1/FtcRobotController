@@ -19,20 +19,10 @@ public class test_turn extends LinearOpMode {
             telemetry.addData("heading",robot.getHeadingDegrees());
             telemetry.update();
 
-            robot.autoDriveRobot(-37, -37);
+            robot.autoDriveRobot(-10, -10);
             robot.turnToHeading(90,.3);
-           // telemetry.update();
-            // while (opModeIsActive()) {
-            //  double leftDistance = robot.findLocationLeft();
-            // double rightDistance = robot.findLocationRight();
-            // telemetry.setAutoClear(true);
-            //  telemetry.addData("distance left", "%.0f", leftDistance);
-            // telemetry.addData("distance right", "%.0f", rightDistance);
-            //  PropNumber();
-            // telemetry.update();
-            // }
-
-
+            robot.beltup();
+            sleep(1200);
 
 
         }
