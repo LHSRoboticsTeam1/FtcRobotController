@@ -569,7 +569,7 @@ public void  stopBelt() {belt.setPower(-.1);}
     public void takeOut() {intakeServos.setPosition(.3);}
     public void hitBar() {intakeServos.setPosition(.6);}
     public void emptyBucket() {bucket.setPosition(.45);}
-    public void resetBucket() {bucket.setPosition(0);}
+    public void resetBucket() {bucket.setPosition(.15);}
     public void spinIn() {spin.setPower(1);}
     public void spinStop() {spin.setPower(0);}
 
