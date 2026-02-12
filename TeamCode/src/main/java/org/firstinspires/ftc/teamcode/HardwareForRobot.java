@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 public class HardwareForRobot {
@@ -16,9 +17,9 @@ public class HardwareForRobot {
     private DcMotor rightRearWheel;
 
     // ---- INTAKE / OUTTAKE ----
-    public DcMotor intakeMotor;
-    public DcMotor outtakeMotor;
-    public DcMotor outtakeMotor2;
+    public DcMotorEx intakeMotor;
+    public DcMotorEx outtakeMotor;
+    public DcMotorEx outtakeMotor2;
 
     // ---- CONVEYORS ----
     public CRServo leftConveyor;
@@ -49,22 +50,33 @@ public class HardwareForRobot {
         rightRearWheel  = myOpMode.hardwareMap.get(DcMotor.class, "BackRight");
 
         // FIXED → proper mecanum directions
-        leftFrontWheel.setDirection(DcMotorSimple.Direction.REVERSE);
-        leftRearWheel.setDirection(DcMotorSimple.Direction.REVERSE);
-        rightFrontWheel.setDirection(DcMotorSimple.Direction.FORWARD);
-        rightRearWheel.setDirection(DcMotorSimple.Direction.FORWARD);
+        leftFrontWheel.setDirection(DcMotorSimple.Direction.FORWARD);
+         leftRearWheel.setDirection(DcMotorSimple.Direction.FORWARD);
+        rightFrontWheel.setDirection(DcMotorSimple.Direction.REVERSE);
+        rightRearWheel.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        leftFrontWheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rightFrontWheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        leftRearWheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rightRearWheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+       // leftFrontWheel.setDirection(DcMotorSimple.Direction.REVERSE);
+       // leftRearWheel.setDirection(DcMotorSimple.Direction.REVERSE);
+       // rightFrontWheel.setDirection(DcMotorSimple.Direction.FORWARD);
+       // rightRearWheel.setDirection(DcMotorSimple.Direction.FORWARD);
+
+
+        leftFrontWheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        rightFrontWheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        leftRearWheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        rightRearWheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+
+        leftFrontWheel.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightFrontWheel.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftRearWheel.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightRearWheel.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 
     // ---------------- INTAKE / OUTTAKE ----------------
     private void initIntakeOuttake() {
-        intakeMotor   = myOpMode.hardwareMap.get(DcMotor.class, "intake");
-        outtakeMotor  = myOpMode.hardwareMap.get(DcMotor.class, "outtake");
-        outtakeMotor2 = myOpMode.hardwareMap.get(DcMotor.class, "outtake2");
+        intakeMotor   = myOpMode.hardwareMap.get(DcMotorEx.class, "intake");
+        outtakeMotor  = myOpMode.hardwareMap.get(DcMotorEx.class, "outtake");
+        outtakeMotor2 = myOpMode.hardwareMap.get(DcMotorEx.class, "outtake2");
 
         intakeMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         outtakeMotor.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -91,18 +103,24 @@ public class HardwareForRobot {
     }
 
     // ---------------- DRIVE FUNCTION ----------------
-    public void manuallyDriveRobot(double x, double y, double turn) {
-        double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(turn), 1);
+    public void manuallyDriveRobot(double stick1x, double stick1y, double stick2x) {
+        double vectorLength = Math.hypot(stick1x, stick1y);
+        double robotAngle = Math.atan2(stick1y, -stick1x) - Math.PI / 4;
+        double rightXscale = stick2x * .5;
+        double rightFrontVelocity = vectorLength * Math.cos(robotAngle) + rightXscale;
+        double leftFrontVelocity = vectorLength * Math.sin(robotAngle) - rightXscale;
+        double rightRearVelocity = vectorLength * Math.sin(robotAngle) + rightXscale;
+        double leftRearVelocity = vectorLength * Math.cos(robotAngle) - rightXscale;
 
-        double lf = (y + x + turn) / denominator;
-        double rf = (y - x - turn) / denominator;
-        double lr = (y - x + turn) / denominator;
-        double rr = (y + x - turn) / denominator;
+        leftFrontWheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightFrontWheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftRearWheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightRearWheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        leftFrontWheel.setPower(lf);
-        rightFrontWheel.setPower(rf);
-        leftRearWheel.setPower(lr);
-        rightRearWheel.setPower(rr);
+        leftFrontWheel.setPower(leftFrontVelocity);
+        rightFrontWheel.setPower(rightFrontVelocity);
+        leftRearWheel.setPower(leftRearVelocity);
+        rightRearWheel.setPower(rightRearVelocity);
     }
 
     // ---------------- INTAKE SYSTEM ----------------
@@ -141,8 +159,9 @@ public class HardwareForRobot {
 
     // ---------------- OUTTAKE ----------------
     public void outtakeShoot() {
-        outtakeMotor.setPower(1);
-        outtakeMotor2.setPower(1);
+        double vel = 0.5 * 2800;
+        outtakeMotor.setVelocity(vel);
+        outtakeMotor2.setVelocity(vel);
     }
 
     public void outtakeStop() {
@@ -150,3 +169,4 @@ public class HardwareForRobot {
         outtakeMotor2.setPower(0);
     }
 }
+

@@ -31,10 +31,10 @@ public class Teleop_6407 extends LinearOpMode {
             // ---------------- INTAKE (B BUTTON) ----------------
             if (gamepad1.b) {
                 robot.intakeOn();
-                sleep(2000);
+            } else {
                 robot.intakeOff();
             }
-
+            
             // ---------------- LIFT BELTS FORWARD (X BUTTON) ----------------
             if (gamepad1.x) {
                 robot.liftItUp();

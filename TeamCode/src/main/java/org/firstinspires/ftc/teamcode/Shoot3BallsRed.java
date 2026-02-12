@@ -3,8 +3,8 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-@Autonomous(name = "Shoot3Balls", group = "Auto")
-public class Shoot3Balls extends LinearOpMode {
+@Autonomous(name = "Shoot3BallsRed", group = "Auto")
+public class Shoot3BallsRed extends LinearOpMode {
 
     private HardwareForRobot robot;
 
@@ -49,7 +49,7 @@ public class Shoot3Balls extends LinearOpMode {
         robot.outtakeStop();
 
         // ---------------- PARK ----------------
-        strafeRight(0.5, 900);
+        strafeRight(-0.5, 900);
 
         telemetry.addData("Auto", "Finished Shooting 3 Balls");
         telemetry.update();
