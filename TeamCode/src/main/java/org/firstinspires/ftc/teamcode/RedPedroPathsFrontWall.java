@@ -8,21 +8,30 @@ import com.pedropathing.paths.PathChain;
 import org.firstinspires.ftc.teamcode.teamPedroPathing.FlippablePath;
 
 public class RedPedroPathsFrontWall implements PedroPathsFrontWall {
+
     private final Follower follower;
 
-    private final Pose startingPose = new Pose(87.5, 7.17, Math.toRadians(90));
-    private final Pose launchPose = new Pose(90, 90, Math.toRadians(45));
+    // ---------- START POSES ----------
+    private final Pose frontWallStart = new Pose(87.5, 7.17, Math.toRadians(90));
+    private final Pose goalSideStart  = new Pose(129.014, 126.977, Math.toRadians(35));
 
-    private final Pose startGoalSideBallPickupPose = new Pose(100, 83.5, 0);
-    private final Pose endGoalSideBallPickupPose = new Pose(125, 83.5, 0);
+    // ---------- LAUNCH ----------
+    private final Pose launchPose = new Pose(90, 90, Math.toRadians(43));
 
-    private final Pose startCentralSidePickupPose = new Pose(106, 60, 0);
-    private final Pose endCentralSidePickupPose = new Pose(130, 60, 0);
+    // ---------- BALL PICKUP ----------
+    private final Pose startGoalSideBallPickupPose = new Pose(96, 83.5, 0);
+    private final Pose endGoalSideBallPickupPose   = new Pose(125, 83.5, 0);
 
-    private final Pose startAudienceSidePickupPose = new Pose(106, 35, 0);
-    private final Pose endAudienceSidePickupPose = new Pose(130, 35, 0);
+    private final Pose startCentralSidePickupPose = new Pose(96, 60, 0);
+    private final Pose endCentralSidePickupPose   = new Pose(124, 60, 0);
 
-    private PathChain startToLaunchPath;
+    private final Pose startAudienceSidePickupPose = new Pose(96, 35, 0);
+    private final Pose endAudienceSidePickupPose   = new Pose(130, 35, 0);
+
+
+    // ---------- PATHS ----------
+    private PathChain frontStartToLaunch;
+    private PathChain goalStartToLaunch;
 
     private PathChain launchToStartGoalSideBallPickup;
     private PathChain startGoalSideBallPickupToEndGoalSideBallPickup;
@@ -42,193 +51,56 @@ public class RedPedroPathsFrontWall implements PedroPathsFrontWall {
     }
 
     private void initPaths() {
-        startToLaunchPath = buildStartToLaunchPath();
+        frontStartToLaunch = buildStartToLaunch(frontWallStart);
+        goalStartToLaunch  = buildStartToLaunch(goalSideStart);
 
-        launchToStartGoalSideBallPickup = buildLaunchToStartGoalSideBallPickup();
-        startGoalSideBallPickupToEndGoalSideBallPickup = buildStartGoalSideBallPickupToEndGoalSideBallPickup();
-        endGoalSideBallPickupToLaunch = buildEndGoalSideBallPickupToLaunch();
+        launchToStartGoalSideBallPickup = buildPath(launchPose, startGoalSideBallPickupPose);
+        startGoalSideBallPickupToEndGoalSideBallPickup = buildPath(startGoalSideBallPickupPose, endGoalSideBallPickupPose);
+        endGoalSideBallPickupToLaunch = buildPath(endGoalSideBallPickupPose, launchPose);
 
-        launchToStartCentralSideBallPickup = buildLaunchToStartCentralSideBallPickup();
-        startCentralSideBallPickupToEndCentralSideBallPickup = buildStartCentralSideBallPickupToEndCentralSideBallPickup();
-        endCentralSideBallPickupToLaunch = buildEndCentralSideBallPickupToLaunch();
+        launchToStartCentralSideBallPickup = buildPath(launchPose, startCentralSidePickupPose);
+        startCentralSideBallPickupToEndCentralSideBallPickup = buildPath(startCentralSidePickupPose, endCentralSidePickupPose);
+        endCentralSideBallPickupToLaunch = buildPath(endCentralSidePickupPose, launchPose);
 
-        launchToStartAudienceSideBallPickup = buildLaunchToStartAudienceSideBallPickup();
-        startAudienceSideBallPickupToEndAudienceSideBallPickup = buildStartAudienceSideBallPickupToEndAudienceSideBallPickup();
-        endAudienceSideBallPickupToLaunch = buildEndAudienceSideBallPickupToLaunch();
+        launchToStartAudienceSideBallPickup = buildPath(launchPose, startAudienceSidePickupPose);
+        startAudienceSideBallPickupToEndAudienceSideBallPickup = buildPath(startAudienceSidePickupPose, endAudienceSidePickupPose);
+        endAudienceSideBallPickupToLaunch = buildPath(endAudienceSidePickupPose, launchPose);
     }
 
-    private PathChain buildStartToLaunchPath() {
+    private PathChain buildStartToLaunch(Pose start) {
         FlippablePath fPath = FlippablePath.linearHeadingPath(
-                new BezierLine(startingPose, launchPose),
-                startingPose.getHeading(),
+                new BezierLine(start, launchPose),
+                start.getHeading(),
                 launchPose.getHeading()
         );
-
-        return follower.pathBuilder()
-                .addPath(fPath)
-                .build();
+        return follower.pathBuilder().addPath(fPath).build();
     }
 
-    @Override
-    public Pose startingPose() {
-        return startingPose;
-    }
-
-    @Override
-    public PathChain startToLaunchPath() {
-        return startToLaunchPath;
-    }
-
-    private PathChain buildLaunchToStartGoalSideBallPickup() {
+    private PathChain buildPath(Pose a, Pose b) {
         FlippablePath fPath = FlippablePath.linearHeadingPath(
-                new BezierLine(launchPose, startGoalSideBallPickupPose),
-                launchPose.getHeading(),
-                startGoalSideBallPickupPose.getHeading()
+                new BezierLine(a, b),
+                a.getHeading(),
+                b.getHeading()
         );
-
-        return follower.pathBuilder()
-                .addPath(fPath)
-                .build();
+        return follower.pathBuilder().addPath(fPath).build();
     }
 
-    @Override
-    public PathChain launchToStartGoalSideBallPickup() {
-        return launchToStartGoalSideBallPickup;
-    }
+    // ---------- INTERFACE IMPLEMENTATION ----------
+    @Override public Pose startFrontPose() { return frontWallStart; }
+    @Override public Pose startGoalPose()  { return goalSideStart; }
 
-    private PathChain buildStartGoalSideBallPickupToEndGoalSideBallPickup() {
-        FlippablePath fPath = FlippablePath.linearHeadingPath(
-                new BezierLine(startGoalSideBallPickupPose, endGoalSideBallPickupPose),
-                startGoalSideBallPickupPose.getHeading(),
-                endGoalSideBallPickupPose.getHeading()
-        );
+    @Override public PathChain startFrontToLaunchPath() { return frontStartToLaunch; }
+    @Override public PathChain startGoalToLaunchPath()  { return goalStartToLaunch; }
 
-        return follower.pathBuilder()
-                .addPath(fPath)
-                .build();
-    }
+    @Override public PathChain launchToStartGoalSideBallPickup() { return launchToStartGoalSideBallPickup; }
+    @Override public PathChain startGoalSideBallPickupToEndGoalSideBallPickup() { return startGoalSideBallPickupToEndGoalSideBallPickup; }
+    @Override public PathChain endGoalSideBallPickupToLaunch() { return endGoalSideBallPickupToLaunch; }
 
-    @Override
-    public PathChain startGoalSideBallPickupToEndGoalSideBallPickup() {
-        return startGoalSideBallPickupToEndGoalSideBallPickup;
-    }
+    @Override public PathChain launchToStartCentralSideBallPickup() { return launchToStartCentralSideBallPickup; }
+    @Override public PathChain startCentralSideBallPickupToEndCentralSideBallPickup() { return startCentralSideBallPickupToEndCentralSideBallPickup; }
+    @Override public PathChain endCentralSideBallPickupToLaunch() { return endCentralSideBallPickupToLaunch; }
 
-    private PathChain buildEndGoalSideBallPickupToLaunch() {
-        FlippablePath fPath = FlippablePath.linearHeadingPath(
-                new BezierLine(endGoalSideBallPickupPose, launchPose),
-                endGoalSideBallPickupPose.getHeading(),
-                launchPose.getHeading()
-        );
-
-        return follower.pathBuilder()
-                .addPath(fPath)
-                .build();
-    }
-
-    @Override
-    public PathChain endGoalSideBallPickupToLaunch() {
-        return endGoalSideBallPickupToLaunch;
-    }
-
-    private PathChain buildLaunchToStartCentralSideBallPickup() {
-        FlippablePath fPath = FlippablePath.linearHeadingPath(
-                new BezierLine(launchPose, startCentralSidePickupPose),
-                launchPose.getHeading(),
-                startCentralSidePickupPose.getHeading()
-        );
-
-        return follower.pathBuilder()
-                .addPath(fPath)
-                .build();
-    }
-
-    @Override
-    public PathChain launchToStartCentralSideBallPickup() {
-        return launchToStartCentralSideBallPickup;
-    }
-
-    private PathChain buildStartCentralSideBallPickupToEndCentralSideBallPickup() {
-        FlippablePath fPath = FlippablePath.linearHeadingPath(
-                new BezierLine(startCentralSidePickupPose, endCentralSidePickupPose),
-                startCentralSidePickupPose.getHeading(),
-                endCentralSidePickupPose.getHeading()
-        );
-
-        return follower.pathBuilder()
-                .addPath(fPath)
-                .build();
-    }
-
-    @Override
-    public PathChain startCentralSideBallPickupToEndCentralSideBallPickup() {
-        return startCentralSideBallPickupToEndCentralSideBallPickup;
-    }
-
-    private PathChain buildEndCentralSideBallPickupToLaunch() {
-        FlippablePath fPath = FlippablePath.linearHeadingPath(
-                new BezierLine(endCentralSidePickupPose, launchPose),
-                endCentralSidePickupPose.getHeading(),
-                launchPose.getHeading()
-        );
-
-        return follower.pathBuilder()
-                .addPath(fPath)
-                .build();
-    }
-
-    @Override
-    public PathChain endCentralSideBallPickupToLaunch() {
-        return endCentralSideBallPickupToLaunch;
-    }
-
-    private PathChain buildLaunchToStartAudienceSideBallPickup() {
-        FlippablePath fPath = FlippablePath.linearHeadingPath(
-                new BezierLine(launchPose, startAudienceSidePickupPose),
-                launchPose.getHeading(),
-                startAudienceSidePickupPose.getHeading()
-        );
-
-        return follower.pathBuilder()
-                .addPath(fPath)
-                .build();
-    }
-
-    @Override
-    public PathChain launchToStartAudienceSideBallPickup() {
-        return launchToStartAudienceSideBallPickup;
-    }
-
-    private PathChain buildStartAudienceSideBallPickupToEndAudienceSideBallPickup() {
-        FlippablePath fPath = FlippablePath.linearHeadingPath(
-                new BezierLine(startAudienceSidePickupPose, endAudienceSidePickupPose),
-                startAudienceSidePickupPose.getHeading(),
-                endAudienceSidePickupPose.getHeading()
-        );
-
-        return follower.pathBuilder()
-                .addPath(fPath)
-                .build();
-    }
-
-    @Override
-    public PathChain startAudienceSideBallPickupToEndAudienceSideBallPickup() {
-        return startAudienceSideBallPickupToEndAudienceSideBallPickup;
-    }
-
-    private PathChain buildEndAudienceSideBallPickupToLaunch() {
-        FlippablePath fPath = FlippablePath.linearHeadingPath(
-                new BezierLine(endAudienceSidePickupPose, launchPose),
-                endAudienceSidePickupPose.getHeading(),
-                launchPose.getHeading()
-        );
-
-        return follower.pathBuilder()
-                .addPath(fPath)
-                .build();
-    }
-
-    @Override
-    public PathChain endAudienceSideBallPickupToLaunch() {
-        return endAudienceSideBallPickupToLaunch;
-    }
+    @Override public PathChain launchToStartAudienceSideBallPickup() { return launchToStartAudienceSideBallPickup; }
+    @Override public PathChain startAudienceSideBallPickupToEndAudienceSideBallPickup() { return startAudienceSideBallPickupToEndAudienceSideBallPickup; }
+    @Override public PathChain endAudienceSideBallPickupToLaunch() { return endAudienceSideBallPickupToLaunch; }
 }

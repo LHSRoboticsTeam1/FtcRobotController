@@ -196,13 +196,8 @@ public class HardwareForRobot {
     public DcMotorEx outtakeMotor;
     public DcMotorEx outtakeMotor2;
 
-    // ---- CONVEYORS ----
-    public CRServo leftConveyor;
-    public CRServo rightConveyor;
-
     // ---- LIFT BELTS ----
-    public CRServo liftBeltLeft;
-    public CRServo liftBeltRight;
+    public DcMotor beltLift;
 
     public HardwareForRobot(LinearOpMode opmode) {
         myOpMode = opmode;
@@ -223,6 +218,7 @@ public class HardwareForRobot {
         rightFrontWheel = myOpMode.hardwareMap.get(DcMotor.class, "FrontRight");
         leftRearWheel   = myOpMode.hardwareMap.get(DcMotor.class, "LeftBack");
         rightRearWheel  = myOpMode.hardwareMap.get(DcMotor.class, "BackRight");
+        beltLift = myOpMode.hardwareMap.get(DcMotor.class, "LiftBelt");
 
         leftFrontWheel.setDirection(DcMotorSimple.Direction.FORWARD);
         leftRearWheel.setDirection(DcMotorSimple.Direction.FORWARD);
@@ -234,10 +230,12 @@ public class HardwareForRobot {
         leftRearWheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightRearWheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+
         leftFrontWheel.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightFrontWheel.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftRearWheel.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightRearWheel.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
 
         // ✅ SET ONCE — Pedro-safe
         leftFrontWheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -252,6 +250,7 @@ public class HardwareForRobot {
         outtakeMotor  = myOpMode.hardwareMap.get(DcMotorEx.class, "outtake");
         outtakeMotor2 = myOpMode.hardwareMap.get(DcMotorEx.class, "outtake2");
 
+
         intakeMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         outtakeMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         outtakeMotor2.setDirection(DcMotorSimple.Direction.FORWARD);
@@ -259,7 +258,7 @@ public class HardwareForRobot {
 
     // ---------------- SERVOS ----------------
     private void initServos() {
-        leftConveyor  = myOpMode.hardwareMap.get(CRServo.class, "LeftConveyor");
+      /*  leftConveyor  = myOpMode.hardwareMap.get(CRServo.class, "LeftConveyor");
         rightConveyor = myOpMode.hardwareMap.get(CRServo.class, "RightConveyor");
 
         leftConveyor.setDirection(CRServo.Direction.FORWARD);
@@ -269,7 +268,11 @@ public class HardwareForRobot {
         liftBeltRight = myOpMode.hardwareMap.get(CRServo.class, "LiftBeltRight");
 
         liftBeltLeft.setDirection(CRServo.Direction.REVERSE);
-        liftBeltRight.setDirection(CRServo.Direction.FORWARD);
+        liftBeltRight.setDirection(CRServo.Direction.FORWARD);*/
+
+        beltLift = myOpMode.hardwareMap.get(DcMotorEx.class, "LiftBelt");
+        beltLift.setDirection(CRServo.Direction.REVERSE);
+
     }
 
     // ---------------- DRIVE FUNCTION ----------------
@@ -292,30 +295,24 @@ public class HardwareForRobot {
     // ---------------- INTAKE ----------------
     public void intakeOn() {
         intakeMotor.setPower(1);
-        leftConveyor.setPower(1);
-        rightConveyor.setPower(1);
     }
 
     public void intakeOff() {
         intakeMotor.setPower(0);
-        leftConveyor.setPower(0);
-        rightConveyor.setPower(0);
     }
 
     // ---------------- BELTS ----------------
     public void liftItUp() {
-        liftBeltLeft.setPower(1);
-        liftBeltRight.setPower(1);
+        beltLift.setPower(1);
     }
 
     public void stopLiftItUp() {
-        liftBeltLeft.setPower(0);
-        liftBeltRight.setPower(0);
+        beltLift.setPower(0);
     }
 
     // ---------------- OUTTAKE ----------------
-    public void outtakeShoot() {
-        double vel = 0.45 * 2800;
+    public void outtakeShoot(double shootScalar) {
+        double vel = shootScalar * 2800;
         outtakeMotor.setVelocity(vel);
         outtakeMotor2.setVelocity(vel);
     }

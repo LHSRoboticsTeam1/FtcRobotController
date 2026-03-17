@@ -1,9 +1,16 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.pedropathing.follower.Follower;
+import com.pedropathing.geometry.Pose;
+import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-@Autonomous(name = "Shoot3Balls", group = "Auto")
+import org.firstinspires.ftc.teamcode.teamPedroPathing.PedroPathTelemetry;
+import org.firstinspires.ftc.teamcode.teamPedroPathing.PedroSleep;
+import org.firstinspires.ftc.teamcode.teamPedroPathing.PedroTeleopData;
+
+@Autonomous(name = "FARShoot3BallsBlue", group = "Auto")
 public class Shoot3Balls extends LinearOpMode {
 
     private HardwareForRobot robot;
@@ -20,41 +27,24 @@ public class Shoot3Balls extends LinearOpMode {
         waitForStart();
         if (!opModeIsActive()) return;
 
-        // ---------------- MOVE TO SHOOTING POSITION ----------------
-        driveForward(0.4, 1600);
+        robot.outtakeShoot(1);
+        sleep(3000);
 
         // ---------------- START ALL SYSTEMS ONCE ----------------
-        robot.outtakeShoot();   // shooter stays ON
-        robot.intakeOn();       // intake stays ON
+        robot.outtakeShoot(1);   // shooter stays ON
+        telemetry.addData("Auto","Shooting (initial)");
+        shootBalls();
 
-        // let shooter fully spin up
-        sleep(1200);
-
-        // ---------------- FEED 3 BALLS ----------------
-        for (int i = 0; i < 6; i++) {
-
-            // FEED ONE BALL
-            robot.liftItUp();
-            sleep(700);
-
-            robot.stopLiftItUp();
-
-            // TIME FOR BALL TO CLEAR & NEXT BALL TO MOVE UP
-            sleep(1200);
-        }
-
-        // ---------------- STOP EVERYTHING ----------------
-        robot.stopLiftItUp();
-        robot.intakeOff();
-        robot.outtakeStop();
+        sleep(3000);
 
         // ---------------- PARK ----------------
-        strafeRight(0.5, 900);
+        driveForward(-0.2, 1600);
 
         telemetry.addData("Auto", "Finished Shooting 3 Balls");
         telemetry.update();
 
-        sleep(3000);
+        PedroTeleopData.startingPose = new Pose (35, 30, Math.toRadians(160));
+
     }
 
     // ---------------- DRIVE HELPERS ----------------
@@ -70,5 +60,25 @@ public class Shoot3Balls extends LinearOpMode {
         sleep(timeMs);
         robot.manuallyDriveRobot(0, 0, 0);
         sleep(100);
+    }
+
+    private void shootBalls() {
+
+        robot.intakeOn();
+
+        long startTime = System.currentTimeMillis();
+        long shootDurationMs = 3000;
+
+        while (opModeIsActive()
+                && System.currentTimeMillis() - startTime < shootDurationMs) {
+
+            robot.liftItUp();
+            sleep(600);
+            robot.stopLiftItUp();
+            sleep(500);
+        }
+
+        robot.intakeOff();
+        robot.outtakeStop();
     }
 }

@@ -57,8 +57,7 @@ public class PedroPathConfiguration {
             .mass(10.2)
             .forwardZeroPowerAcceleration(-42.2)
             .lateralZeroPowerAcceleration(-61.5)
-            .headingPIDFCoefficients(new PIDFCoefficients(.9, 0, .03, .03))
-                //f: 0.03
+            .headingPIDFCoefficients(new PIDFCoefficients(.9, 0, .04, .02))
             .translationalPIDFCoefficients(new PIDFCoefficients(.05,0,.005,.02))
             .drivePIDFCoefficients(new FilteredPIDFCoefficients(.02, 0, .0001, .6, 0))
             .centripetalScaling(.0004);
