@@ -9,6 +9,8 @@ public interface PedroPathsFrontWall {
     Pose startFrontPose();
     Pose startGoalPose();
 
+    Pose parkPose();
+
     // ---------- START → LAUNCH ----------
     PathChain startFrontToLaunchPath();
     PathChain startGoalToLaunchPath();

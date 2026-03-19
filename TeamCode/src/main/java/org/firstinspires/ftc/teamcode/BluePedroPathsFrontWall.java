@@ -21,12 +21,19 @@ public class BluePedroPathsFrontWall implements PedroPathsFrontWall {
     }
 
     @Override public Pose startFrontPose() {
-        //return flipper.flipPathChain(red.startFrontPose());
         return new Pose(
                 144 - red.startFrontPose().getX(),
                 red.startFrontPose().getY(),
                 MathFunctions.normalizeAngle(Math.PI - red.startFrontPose().getHeading())
                 );
+    }
+
+    @Override public Pose parkPose() {
+        return new Pose(
+                144 - red.parkPose().getX(),
+                red.parkPose().getY(),
+                MathFunctions.normalizeAngle(Math.PI - red.parkPose().getHeading())
+        );
     }
 
     @Override public Pose startGoalPose() {

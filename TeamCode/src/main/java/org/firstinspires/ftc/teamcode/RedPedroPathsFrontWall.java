@@ -14,7 +14,7 @@ public class RedPedroPathsFrontWall implements PedroPathsFrontWall {
     // ---------- START POSES ----------
     private final Pose frontWallStart = new Pose(87.5, 7.17, Math.toRadians(90));
     private final Pose goalSideStart  = new Pose(129.014, 126.977, Math.toRadians(35));
-
+    private final Pose parkPose = new Pose(39.486, 17.319, Math.toRadians(180));
     // ---------- LAUNCH ----------
     private final Pose launchPose = new Pose(90, 90, Math.toRadians(43));
 
@@ -88,7 +88,7 @@ public class RedPedroPathsFrontWall implements PedroPathsFrontWall {
     // ---------- INTERFACE IMPLEMENTATION ----------
     @Override public Pose startFrontPose() { return frontWallStart; }
     @Override public Pose startGoalPose()  { return goalSideStart; }
-
+    @Override public Pose parkPose() { return parkPose; }
     @Override public PathChain startFrontToLaunchPath() { return frontStartToLaunch; }
     @Override public PathChain startGoalToLaunchPath()  { return goalStartToLaunch; }
 

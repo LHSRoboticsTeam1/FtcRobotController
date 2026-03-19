@@ -21,9 +21,12 @@ import org.firstinspires.ftc.teamcode.teamPedroPathing.PedroTeleopData;
 public class PedroPathTeleOp extends LinearOpMode {
     private Follower follower;
     private Pose launchPose;
+    private Pose parkPose;
     private AllianceColor allianceColor;
     private PedroSleep pedroSleep;
     private PedroPathTelemetry pedroPathTelemetry;
+
+    private PedroPathsFrontWall pedroPaths;
 
     private double[] pLevels = { 0.45, 1 };
     private int pLevelCurrent = 0;
@@ -35,10 +38,13 @@ public class PedroPathTeleOp extends LinearOpMode {
         PedroPathConfiguration pedroPathConfiguration = new PedroPathConfiguration(this);
         allianceColor = PedroTeleopData.allianceColor == null ? AllianceColor.RED : PedroTeleopData.allianceColor;
         follower = pedroPathConfiguration.getFollower();
-        follower.setStartingPose(PedroTeleopData.startingPose == null ? new Pose() : PedroTeleopData.startingPose);
         follower.startTeleOpDrive(); //This calls update() as well.
         initSetup(); //Give chance to change alliance color.
+        pedroPaths = (allianceColor == AllianceColor.RED) ? new RedPedroPathsFrontWall(follower) :
+                new BluePedroPathsFrontWall(follower);
+        follower.setStartingPose(PedroTeleopData.startingPose == null ? pedroPaths.startFrontPose() : PedroTeleopData.startingPose);
         setLaunchPose(); //Set launch pose for alliance color.
+        setParkPose();
         pedroSleep = new PedroSleep(follower);
         pedroPathTelemetry = new PedroPathTelemetry(telemetry, follower, allianceColor);
 
@@ -74,10 +80,21 @@ public class PedroPathTeleOp extends LinearOpMode {
              * followPath() the path fromHereToLaunch().
              */
 
-            if (gamepad1.leftBumperWasPressed() && !follower.isBusy()) {
-                follower.followPath(fromHereToLaunch());
+            if (gamepad1.dpadUpWasPressed()){
+                if (follower.isBusy()) {
+                    follower.startTeleOpDrive();
+                } else {
+                    follower.followPath(fromHereToLaunch());
+                }
             }
 
+            if (gamepad1.dpadDownWasPressed()){
+                if (follower.isBusy()) {
+                    follower.startTeleOpDrive();
+                } else {
+                    follower.followPath(fromHereToPark());
+                }
+            }
             // ---------------- INTAKE ----------------
             if (gamepad1.b) {
                 robot.intakeOn();
@@ -126,12 +143,26 @@ public class PedroPathTeleOp extends LinearOpMode {
                 .build();
     }
 
-    private void setLaunchPose() {
-        PedroPathsFrontWall pedroPaths = (allianceColor == AllianceColor.RED) ? new RedPedroPathsFrontWall(follower) :
-                new BluePedroPathsFrontWall(follower);
+    private PathChain fromHereToPark() {
+        Pose herePose = follower.getPose();
 
+        return follower.pathBuilder()
+                .addPath(new BezierLine(herePose, parkPose))
+                .setLinearHeadingInterpolation(herePose.getHeading(), parkPose.getHeading())
+                .build();
+    }
+    private void setLaunchPose() {
         launchPose = pedroPaths.startFrontToLaunchPath().firstPath().endPose();
         telemetry.addLine("Launch Pose");
+        telemetry.addData("x", launchPose.getX());
+        telemetry.addData("y", launchPose.getY());
+        telemetry.addData("heading", Math.toDegrees(launchPose.getHeading()));
+        telemetry.update();
+    }
+
+    private void setParkPose() {
+        parkPose = pedroPaths.parkPose();
+        telemetry.addLine("Park Pose");
         telemetry.addData("x", launchPose.getX());
         telemetry.addData("y", launchPose.getY());
         telemetry.addData("heading", Math.toDegrees(launchPose.getHeading()));
