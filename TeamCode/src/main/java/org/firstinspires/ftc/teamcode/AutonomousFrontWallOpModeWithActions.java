@@ -66,7 +66,7 @@ public class AutonomousFrontWallOpModeWithActions extends LinearOpMode {
 
         waitForStart();
 
-        robot.outtakeShoot(.45);
+        robot.outtakeShoot(.94);
 
         // ---------- STATE MACHINE ----------
         while (opModeIsActive()) {
@@ -166,7 +166,7 @@ public class AutonomousFrontWallOpModeWithActions extends LinearOpMode {
 
             // 6 Second ball pickup
             case 6:
-                if (!follower.isBusy()) {
+                if (!follower.isBusy ()) {
                     pedroMessage = "Picking up balls";
                     robot.intakeOn();
 
@@ -179,7 +179,7 @@ public class AutonomousFrontWallOpModeWithActions extends LinearOpMode {
                 }
                 break;
 
-                // 4️⃣ RETURN TO LAUNCH
+            // 4️⃣ RETURN TO LAUNCH
             case 7:
                 if (!follower.isBusy()) {
                     pedroMessage = "Return → Second Launch";
@@ -190,6 +190,45 @@ public class AutonomousFrontWallOpModeWithActions extends LinearOpMode {
 
             // 5️⃣ SHOOT AGAIN
             case 8:
+                if (!follower.isBusy()) {
+                    pedroMessage = "Shooting (after pickup)";
+                    shootBalls();
+
+                    ballSpikeLocation = BallSpikeLocation.INSTANCE.toggleLocation(true, ballSpikeLocation);
+                    ballSpikeLocation = BallSpikeLocation.INSTANCE.toggleLocation(true, ballSpikeLocation);
+
+                    setBallSpikeLocationPaths();
+                    follower.followPath(pathFromLaunchZoneToStartBallPickup);
+                    pathState++;
+                }
+                break;
+
+            // 6 third ball pickup
+            case 9:
+                if (!follower.isBusy ()) {
+                    pedroMessage = "Picking up balls";
+                    robot.intakeOn();
+
+                    follower.followPath(
+                            pathFromStartBallPickupToEndBallPickup,
+                            ballPickupPower,
+                            true
+                    );
+                    pathState++;
+                }
+                break;
+
+            // 4️⃣ RETURN TO LAUNCH
+            case 10:
+                if (!follower.isBusy()) {
+                    pedroMessage = "Return → Second Launch";
+                    follower.followPath(pathFromEndBallPickupToLaunchZone);
+                    pathState++;
+                }
+                break;
+
+            // 5️⃣ SHOOT AGAIN
+            case 11:
                 if (!follower.isBusy()) {
                     pedroMessage = "Shooting (after second pickup)";
                     shootBalls();
@@ -202,7 +241,7 @@ public class AutonomousFrontWallOpModeWithActions extends LinearOpMode {
                 break;
 
             // 6️⃣ DONE
-            case 9:
+            case 12:
                 if (!follower.isBusy()) {
                     pedroMessage = "Autonomous Complete";
                 }
@@ -218,15 +257,15 @@ public class AutonomousFrontWallOpModeWithActions extends LinearOpMode {
         robot.intakeOn();
 
         long startTime = System.currentTimeMillis();
-        long shootDurationMs = 3000;
+        long shootDurationMs = 2950;
 
         while (opModeIsActive()
                 && System.currentTimeMillis() - startTime < shootDurationMs) {
 
             robot.liftItUp();
-            sleep(600);
+            sleep(850);
             robot.stopLiftItUp();
-            sleep(500);
+            sleep(750);
         }
 
 

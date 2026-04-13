@@ -290,7 +290,7 @@ public class HardwareForRobot {
         rightFrontWheel.setPower(rightFrontVelocity);
         leftRearWheel.setPower(leftRearVelocity);
         rightRearWheel.setPower(rightRearVelocity);
-    }
+    } //can we make it go faster?
 
     // ---------------- INTAKE ----------------
     public void intakeOn() {
@@ -312,7 +312,7 @@ public class HardwareForRobot {
 
     // ---------------- OUTTAKE ----------------
     public void outtakeShoot(double shootScalar) {
-        double vel = shootScalar * 2800;
+        double vel = shootScalar * 3000 ;
         outtakeMotor.setVelocity(vel);
         outtakeMotor2.setVelocity(vel);
     }

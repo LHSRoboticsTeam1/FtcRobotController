@@ -32,7 +32,7 @@ public class Shoot3BallsRed extends LinearOpMode {
 
         // ---------------- START ALL SYSTEMS ONCE ----------------
         robot.outtakeShoot(1);   // shooter stays ON
-        telemetry.addData("Auto","Shooting (initial)");
+        telemetry.addData("Auto", "Shooting (initial)");
         shootBalls();
 
         sleep(3000);
@@ -42,7 +42,7 @@ public class Shoot3BallsRed extends LinearOpMode {
 
         telemetry.addData("Auto", "Finished Shooting 3 Balls");
         telemetry.update();
-        PedroTeleopData.startingPose = new Pose (36, 81, Math.toRadians(100));
+        PedroTeleopData.startingPose = new Pose(36, 81, Math.toRadians(100));
 
     }
 
@@ -61,23 +61,28 @@ public class Shoot3BallsRed extends LinearOpMode {
         sleep(100);
     }
 
-    private void shootBalls() {
+private void shootBalls() {
 
         robot.intakeOn();
 
         long startTime = System.currentTimeMillis();
-        long shootDurationMs = 3000;
+        long shootDurationMs = 1000;
+        sleep(2000);
+        long shootDurationMs2 = 1000;
+        sleep(2000);
+        long shootDurationMs3 = 1000;
 
         while (opModeIsActive()
-                && System.currentTimeMillis() - startTime < shootDurationMs) {
+                && System.currentTimeMillis() - startTime < shootDurationMs + shootDurationMs2 + shootDurationMs3) {
 
             robot.liftItUp();
-            sleep(600);
+            sleep(1000);
             robot.stopLiftItUp();
-            sleep(500);
+            sleep(600);
         }
 
         robot.intakeOff();
         robot.outtakeStop();
     }
 }
+

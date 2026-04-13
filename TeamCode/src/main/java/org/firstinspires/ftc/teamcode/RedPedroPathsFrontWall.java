@@ -13,20 +13,23 @@ public class RedPedroPathsFrontWall implements PedroPathsFrontWall {
 
     // ---------- START POSES ----------
     private final Pose frontWallStart = new Pose(87.5, 7.17, Math.toRadians(90));
-    private final Pose goalSideStart  = new Pose(129.014, 126.977, Math.toRadians(35));
-    private final Pose parkPose = new Pose(39.486, 17.319, Math.toRadians(180));
+    private final Pose goalSideStart  = new Pose(123.193, 121.45, Math.toRadians(35));
+    private final Pose parkPose = new Pose(39.486, 19.0, Math.toRadians(0));
+
+    //Possible 2nd park pose for full?
     // ---------- LAUNCH ----------
-    private final Pose launchPose = new Pose(90, 90, Math.toRadians(43));
+    private final Pose shortLaunchPose = new Pose(80, 99, Math.toRadians(30));
+private final Pose longLaunchPose = new Pose(78.9, 78, Math.toRadians(43));
 
     // ---------- BALL PICKUP ----------
-    private final Pose startGoalSideBallPickupPose = new Pose(96, 83.5, 0);
-    private final Pose endGoalSideBallPickupPose   = new Pose(125, 83.5, 0);
+    private final Pose startGoalSideBallPickupPose = new Pose(96, 83, 0);
+    private final Pose endGoalSideBallPickupPose   = new Pose(125.2, 83, 0);
 
-    private final Pose startCentralSidePickupPose = new Pose(96, 60, 0);
-    private final Pose endCentralSidePickupPose   = new Pose(124, 60, 0);
+    private final Pose startCentralSidePickupPose = new Pose(96, 60,0);
+    private final Pose endCentralSidePickupPose   = new Pose(127, 60,0);
 
-    private final Pose startAudienceSidePickupPose = new Pose(96, 35, 0);
-    private final Pose endAudienceSidePickupPose   = new Pose(130, 35, 0);
+    private final Pose startAudienceSidePickupPose = new Pose(96, 35.8, 0);
+    private final Pose endAudienceSidePickupPose   = new Pose(130, 35.8, 0);
 
 
     // ---------- PATHS ----------
@@ -54,24 +57,24 @@ public class RedPedroPathsFrontWall implements PedroPathsFrontWall {
         frontStartToLaunch = buildStartToLaunch(frontWallStart);
         goalStartToLaunch  = buildStartToLaunch(goalSideStart);
 
-        launchToStartGoalSideBallPickup = buildPath(launchPose, startGoalSideBallPickupPose);
+        launchToStartGoalSideBallPickup = buildPath(shortLaunchPose, startGoalSideBallPickupPose);
         startGoalSideBallPickupToEndGoalSideBallPickup = buildPath(startGoalSideBallPickupPose, endGoalSideBallPickupPose);
-        endGoalSideBallPickupToLaunch = buildPath(endGoalSideBallPickupPose, launchPose);
+        endGoalSideBallPickupToLaunch = buildPath(endGoalSideBallPickupPose, shortLaunchPose);
 
-        launchToStartCentralSideBallPickup = buildPath(launchPose, startCentralSidePickupPose);
+        launchToStartCentralSideBallPickup = buildPath(shortLaunchPose, startCentralSidePickupPose);
         startCentralSideBallPickupToEndCentralSideBallPickup = buildPath(startCentralSidePickupPose, endCentralSidePickupPose);
-        endCentralSideBallPickupToLaunch = buildPath(endCentralSidePickupPose, launchPose);
+        endCentralSideBallPickupToLaunch = buildPath(endCentralSidePickupPose, shortLaunchPose);
 
-        launchToStartAudienceSideBallPickup = buildPath(launchPose, startAudienceSidePickupPose);
+        launchToStartAudienceSideBallPickup = buildPath(shortLaunchPose, startAudienceSidePickupPose);
         startAudienceSideBallPickupToEndAudienceSideBallPickup = buildPath(startAudienceSidePickupPose, endAudienceSidePickupPose);
-        endAudienceSideBallPickupToLaunch = buildPath(endAudienceSidePickupPose, launchPose);
+        endAudienceSideBallPickupToLaunch = buildPath(endAudienceSidePickupPose, shortLaunchPose);
     }
 
     private PathChain buildStartToLaunch(Pose start) {
         FlippablePath fPath = FlippablePath.linearHeadingPath(
-                new BezierLine(start, launchPose),
+                new BezierLine(start, shortLaunchPose),
                 start.getHeading(),
-                launchPose.getHeading()
+                shortLaunchPose.getHeading()
         );
         return follower.pathBuilder().addPath(fPath).build();
     }
@@ -89,6 +92,8 @@ public class RedPedroPathsFrontWall implements PedroPathsFrontWall {
     @Override public Pose startFrontPose() { return frontWallStart; }
     @Override public Pose startGoalPose()  { return goalSideStart; }
     @Override public Pose parkPose() { return parkPose; }
+    @Override public Pose shortLaunchPose(){ return shortLaunchPose;}
+    @Override public Pose longLaunchPose(){ return longLaunchPose;}
     @Override public PathChain startFrontToLaunchPath() { return frontStartToLaunch; }
     @Override public PathChain startGoalToLaunchPath()  { return goalStartToLaunch; }
 

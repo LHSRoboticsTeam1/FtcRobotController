@@ -36,6 +36,20 @@ public class BluePedroPathsFrontWall implements PedroPathsFrontWall {
         );
     }
 
+    @Override public Pose longLaunchPose(){
+        return new Pose(
+                144 - red.longLaunchPose().getX(),
+                red.longLaunchPose().getY(),
+                MathFunctions.normalizeAngle(Math.PI - red.longLaunchPose().getHeading())
+        );
+    }
+    @Override public Pose shortLaunchPose(){
+        return new Pose(
+                144- red.shortLaunchPose().getX(),
+                red.shortLaunchPose().getY(),
+                MathFunctions.normalizeAngle(Math.PI - red.shortLaunchPose().getHeading())
+        );
+    }
     @Override public Pose startGoalPose() {
         return blueGoalStart;
     }
