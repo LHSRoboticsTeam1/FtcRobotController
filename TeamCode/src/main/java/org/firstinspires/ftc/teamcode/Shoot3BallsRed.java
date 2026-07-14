@@ -60,7 +60,7 @@ public class Shoot3BallsRed extends LinearOpMode {
         robot.manuallyDriveRobot(0, 0, 0);
         sleep(100);
     }
-
+    
 private void shootBalls() {
 
         robot.intakeOn();
@@ -85,4 +85,5 @@ private void shootBalls() {
         robot.outtakeStop();
     }
 }
+
 
