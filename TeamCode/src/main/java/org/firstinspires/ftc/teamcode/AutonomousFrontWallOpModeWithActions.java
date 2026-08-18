@@ -33,13 +33,12 @@ public class AutonomousFrontWallOpModeWithActions extends LinearOpMode {
     private PathChain pathFromEndBallPickupToLaunchZone;
     private PedroSleep sleeper;
 
-    private HardwareForRobot robot;
+    private RobotHardware robot;
 
     @Override
     public void runOpMode() {
 
-        robot = new HardwareForRobot(this);
-        robot.init();
+        robot = new RobotHardware(this);
 
         PedroPathConfiguration pedroPathConfiguration =
                 new PedroPathConfiguration(this);
@@ -66,7 +65,7 @@ public class AutonomousFrontWallOpModeWithActions extends LinearOpMode {
 
         waitForStart();
 
-        robot.outtakeShoot(.94);
+        //robot.outtakeShoot(.94);
 
         // ---------- STATE MACHINE ----------
         while (opModeIsActive()) {
@@ -77,7 +76,7 @@ public class AutonomousFrontWallOpModeWithActions extends LinearOpMode {
 
         PedroTeleopData.startingPose = follower.getPose();
 
-        robot.outtakeStop();
+       // robot.outtakeStop();
     }
 
     // =====================================================
@@ -232,7 +231,7 @@ public class AutonomousFrontWallOpModeWithActions extends LinearOpMode {
                 if (!follower.isBusy()) {
                     pedroMessage = "Shooting (after second pickup)";
                     shootBalls();
-                    robot.outtakeStop();
+                   // robot.outtakeStop();
                     robot.intakeOff();
 
                     follower.followPath(pathFromLaunchZoneToStartBallPickup);
@@ -262,9 +261,9 @@ public class AutonomousFrontWallOpModeWithActions extends LinearOpMode {
         while (opModeIsActive()
                 && System.currentTimeMillis() - startTime < shootDurationMs) {
 
-            robot.liftItUp();
+            //robot.liftItUp();
             sleep(850);
-            robot.stopLiftItUp();
+            //robot.stopLiftItUp();
             sleep(750);
         }
 

@@ -25,7 +25,7 @@ public class PedroPathConfiguration {
 
     private Follower follower;
 
-    public PedroPathConfiguration(LinearOpMode opMode) {
+    public PedroPathConfiguration(OpMode opMode) {
         this.myOpMode = opMode;
         init();
     }
