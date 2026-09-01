@@ -46,7 +46,7 @@ public class PedroPathConfiguration {
          * Follower has its own globalMaxPower that is initialized to 1.
          * Irritatingly, this cannot be changed using FollowerConstants.
          * It can only be changed by calling setMaxPower() on the built instance
-         * of Follower. Set globalMaxPower to be the the same as that in DriveConstants.
+         * of Follower. Set globalMaxPower to be the same as that in DriveConstants.
          * (DriveConstants are set via MecanumConstants.)
          */
         this.follower.setMaxPower(driveConstants.getMaxPower());
