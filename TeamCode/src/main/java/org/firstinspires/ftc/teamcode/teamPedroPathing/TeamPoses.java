@@ -1,6 +1,6 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.teamPedroPathing;
 
-import com.pedropathing.geometry.Pose;
+import com.pedropathing.math.Pose;
 
 public class TeamPoses {
     public static Pose startPose = new Pose(72, 8, Math.toRadians (90));

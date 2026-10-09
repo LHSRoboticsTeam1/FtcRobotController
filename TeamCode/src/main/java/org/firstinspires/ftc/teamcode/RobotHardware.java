@@ -13,7 +13,7 @@ public class RobotHardware {
     private Servo rotationTubeServo;
     private OpMode myOpMode;
 
-    public DcMotor leftLift;
+    public DcMotorEx   leftLift;
     public int leftEncoderCount;
 
     public final int fullExtensionCount = 30320;
@@ -41,7 +41,7 @@ public class RobotHardware {
     }
 
     private void initLift(){
-    leftLift = myOpMode.hardwareMap.get(DcMotor.class, "leftLift"); // Name Placeholder
+    leftLift = myOpMode.hardwareMap.get(DcMotorEx.class, "leftLift"); // Name Placeholder
        leftLift.setDirection(DcMotorSimple.Direction.REVERSE);
       leftEncoderCount = leftLift.getCurrentPosition();
     }

@@ -8,6 +8,8 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 
+import org.firstinspires.ftc.teamcode.teamPedroPathing.PedroPathConfiguration;
+
 import java.util.List;
 
 
@@ -26,7 +28,6 @@ public class StarterOpMode extends OpMode{
 
         PedroPathConfiguration pedroPathConfiguration = new PedroPathConfiguration( this );
       follower = pedroPathConfiguration.getFollower();
-       follower.startTeleOpDrive();
         robotHardware = new RobotHardware(this);
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
         limelight.pipelineSwitch(8);
@@ -56,7 +57,7 @@ public class StarterOpMode extends OpMode{
         }
 
         follower.update();
-        follower.setTeleOpDrive( -gamepad1.left_stick_y, -gamepad1.left_stick_x, -gamepad1.right_stick_x, true);
+        follower.manual( -gamepad1.left_stick_y, -gamepad1.left_stick_x, -gamepad1.right_stick_x);
 
         if (gamepad1.x){
             robotHardware.intakeOn();

@@ -1,18 +1,19 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.pedropathing.follower.Follower;
-import com.pedropathing.paths.Path;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.teamPedroPathing.PedroPathTelemetry;
+import org.firstinspires.ftc.teamcode.teamPedroPathing.PedroPathConfiguration;
+import org.firstinspires.ftc.teamcode.teamPedroPathing.TeamPoses;
 import org.lhssa.ftc.teamcode.pedroPathing.AllianceColor;
 import org.lhssa.ftc.teamcode.pedroPathing.HeadingInterpolationType;
 import org.lhssa.ftc.teamcode.pedroPathing.PedroMotion;
+import org.lhssa.ftc.teamcode.pedroPathing.PedroPathData;
+import org.lhssa.ftc.teamcode.pedroPathing.PedroPathTelemetry;
 import org.lhssa.ftc.teamcode.pedroPathing.PedroPather;
 
 import java.util.List;
@@ -37,10 +38,10 @@ public class CampAutonomous extends OpMode {
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
         limelight.pipelineSwitch(1);
         limelight.start();
-        follower.setStartingPose(TeamPoses.startPose);
+        follower.setPose(TeamPoses.startPose); //starting Pose
         pedroMotion = new PedroMotion(follower);
         pedroPather = new PedroPather(AllianceColor.RED, AllianceColor.RED);
-        pedroPathTelemetry = new PedroPathTelemetry(telemetry, follower, org.firstinspires.ftc.teamcode.AllianceColor.RED);
+        pedroPathTelemetry = new PedroPathTelemetry(telemetry, follower, AllianceColor.RED);
     }
 
     public void init_loop() {
@@ -75,7 +76,7 @@ public class CampAutonomous extends OpMode {
     }
 
     private void performLeftActions() {
-        Path path;
+        PedroPathData path;
         switch (actionStep) {
             case 0:
                 path = pedroPather.pathBetween(TeamPoses.startPose, TeamPoses.startLeftPollenPickupPose);
@@ -107,7 +108,7 @@ public class CampAutonomous extends OpMode {
     }
 
     private void performRightActions() {
-        Path path;
+        PedroPathData path;
         switch (actionStep) {
             case 0:
                 path = pedroPather.pathBetween(TeamPoses.startPose, TeamPoses.startRightPollenPickupPose);
@@ -137,7 +138,7 @@ public class CampAutonomous extends OpMode {
     }
     private void performCornerActions()
     {
-        Path path;
+        PedroPathData path;
         switch (actionStep) {
             case 0:
                 path = pedroPather.pathBetween(TeamPoses.startPose, TeamPoses.startCornerPollenPickupPose);
