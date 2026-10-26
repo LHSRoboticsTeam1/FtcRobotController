@@ -1,14 +1,22 @@
 package org.firstinspires.ftc.teamcode.teamPedroPathing;
 
+import static com.pedropathing.api.Paths.line;
+
+import static org.lhssa.ftc.teamcode.pedroPathing.PedroTeleopData.startingPose;
+
+import com.pedropathing.api.Paths.*;
 import com.pedropathing.math.Pose;
+import com.pedropathing.paths.Path;
+
+import org.lhssa.ftc.teamcode.pedroPathing.AllianceColor;
+
 
 public class TeamPoses {
-    public static Pose startPose = new Pose(72, 8, Math.toRadians (90));
-    public static Pose startLeftPollenPickupPose = new Pose (24, 48, Math.toRadians(90));
-    public static Pose endLeftPollenPickupPose = new Pose (24, 96, Math.toRadians(90));
-    public static Pose flowerPose = new Pose (72,120, Math.toRadians(-90));
-    public static Pose startRightPollenPickupPose = new Pose (108, 72, Math.toRadians(0));
-    public static Pose endRightPollenPickupPose = new Pose(120, 72, Math.toRadians(0));
-    public static Pose startCornerPollenPickupPose = new Pose(120, 8, Math.toRadians(0));
-    public static Pose endCornerPollenPickupPose= new Pose(130, 8, Math.toRadians(0));
+    public static AllianceColor canonicalColor = AllianceColor.RED;
+    public static Pose startShootPose = new Pose(56.0, 10.0,Math.toRadians(90));
+    public static Pose startGardenPose = new Pose (17.0, 10.0, Math.toRadians(180));
+    public static Pose endGardenPose = new Pose (5.0, 10.0, Math.toRadians(180));
+    public static Pose parkPose = new Pose (12.400, 103.800, Math.toRadians(90));
+
+
 }

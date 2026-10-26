@@ -2,6 +2,7 @@
 package org.firstinspires.ftc.teamcode;
 
 
+import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -9,21 +10,21 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+
 public class RobotHardware {
-    private Servo rotationTubeServo;
+   // public Limelight3A limelight;
+    public DcMotor shooterMotor;
+    public DcMotor shooterIntakeMotor;
+
     private OpMode myOpMode;
 
-    public DcMotorEx   leftLift;
-    public int leftEncoderCount;
+    public double power = 200 ;
+   private DcMotorEx intakeMotor;
 
-    public final int fullExtensionCount = 30320;
-    public final double power = 1;
 
-    // ---------------- LIFT SENSOR ----------------
-    DigitalChannel digitalTouch;
+    // ---- INITS ----
 
-    // ---- INTAKE / OUTTAKE ----
-    private DcMotorEx intakeMotor;
 
 
     public RobotHardware(OpMode opmode) {
@@ -32,78 +33,31 @@ public class RobotHardware {
     }
 
     private void init() {
-        initIntakeOuttake();
-        initServos();
-        initLift();
-        initLiftBottom();
+        initMotors();
+        //initLimelight();
         myOpMode.telemetry.addData(">", "Hardware Initialized");
         myOpMode.telemetry.update();
     }
 
-    private void initLift(){
-    leftLift = myOpMode.hardwareMap.get(DcMotorEx.class, "leftLift"); // Name Placeholder
-       leftLift.setDirection(DcMotorSimple.Direction.REVERSE);
-      leftEncoderCount = leftLift.getCurrentPosition();
-    }
 
-    // ---------------- INTAKE / OUTTAKE ----------------
-    private void initIntakeOuttake() {
-        intakeMotor   = myOpMode.hardwareMap.get(DcMotorEx.class, "intake");
 
+    // ---------------- MOTORS ----------------
+    private void initMotors() {
+        intakeMotor   = myOpMode.hardwareMap.get(DcMotorEx.class, "inTakeMotor");
 
         intakeMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        shooterMotor = myOpMode.hardwareMap.get(DcMotor.class, "shooterMotor");
+        shooterMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        shooterIntakeMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        shooterIntakeMotor = myOpMode.hardwareMap.get(DcMotor.class, "shooterIntakeMotor");
 
     }
-
-    // ---------------- SERVOS ----------------
-    private void initServos(){
-        rotationTubeServo = myOpMode.hardwareMap.get(Servo.class, "rotationalTubeServo");
-    }
-    public void tiltTube(){
-        rotationTubeServo.setPosition(1) ;
-    }
-    public void vertTube(){
-        rotationTubeServo.setPosition(0.5) ;
-    }
-
-
-    public void initLiftBottom(){
-        digitalTouch = myOpMode.hardwareMap.get(DigitalChannel.class, "liftBottom");
-
-        digitalTouch.setMode(DigitalChannel.Mode.INPUT);
-
-    }
-
-    public void liftDown () {
-        //myOpMode.telemetry.addData("leftEncoderCount",leftEncoderCount);
-        int leftTargetPos = fullExtensionCount - leftEncoderCount;
-
-//        myOpMode.telemetry.addData("leftTargetPos", leftTargetPos);
-//        myOpMode.telemetry.update();
-
-        leftLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        leftLift.setPower(-power);
-
-        while(digitalTouch.getState()) {
-           myOpMode.telemetry.addLine("Running slide to bottom");
-           myOpMode.telemetry.update();
-        }
-        
-        leftLift.setPower(0);
-        myOpMode.telemetry.addData("should be", "bottom");
-        myOpMode.telemetry.update();
-    }
-    public void liftUp () {
-        leftEncoderCount = leftLift.getCurrentPosition();
-        leftLift.setTargetPosition(leftEncoderCount +fullExtensionCount);
-        leftLift.setPower(power);
-    }
-
-
-
-    // ---------------- INTAKE ----------------
     public void intakeOn() {
-        intakeMotor.setPower(1);
+        intakeMotor.setVelocity(power, AngleUnit.DEGREES);
+    }
+    public void shooterIntakeOn(){
+        shooterMotor.setPower(1);
     }
     public void outtakeOn(){
         intakeMotor.setPower(-1);
@@ -111,11 +65,26 @@ public class RobotHardware {
     public void intakeOff() {
         intakeMotor.setPower(0);
     }
+    public void shooterON(){shooterMotor.setPower(1); }
+    public void shooterOFF(){shooterMotor.setPower(0);}
+    public void intakeSpeedUp(){power = power + 10;}
+    public void intakeSpeedDown(){power = power - 10;}
+
+    // ---------------- LIMELIGHT ----------------
+   // private void initLimelight() {
+        //limelight = myOpMode.hardwareMap.get(Limelight3A.class, "limelight");
+  //  }
+
+
+
+
+
 
     // ---------------- BELTS ----------------
 
 
-    // ---------------- OUTTAKE ----------------
+    // ---------------- SHOOTER ----------------
+
 
 }
 

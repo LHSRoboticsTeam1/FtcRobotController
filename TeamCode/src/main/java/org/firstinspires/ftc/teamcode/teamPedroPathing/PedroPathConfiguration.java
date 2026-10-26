@@ -14,6 +14,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
  * This class provides a single location to set Pedro Path's myriad constraints.
  * It is responsible for creating and returning a Follower built using these constraints.
  */
+@Deprecated
 public class PedroPathConfiguration {
     private final OpMode myOpMode;
 

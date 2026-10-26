@@ -50,10 +50,10 @@ public class StarterOpMode extends OpMode{
     @Override
     public void loop() {
         if (gamepad1.dpadUpWasPressed()){
-            robotHardware.liftUp();
+            //robotHardware.liftUp();
         }
         if (gamepad1.dpadDownWasPressed()){
-            robotHardware.liftDown();
+            //robotHardware.liftDown();
         }
 
         follower.update();
@@ -66,10 +66,10 @@ public class StarterOpMode extends OpMode{
         }
         if (gamepad1.bWasPressed()) {
             if (bWasPressed) {
-                    robotHardware.vertTube();
+                    //robotHardware.vertTube();
                     bWasPressed = false;
             } else {
-                robotHardware.tiltTube();
+                //robotHardware.tiltTube();
                 bWasPressed = true;
             }
         }
