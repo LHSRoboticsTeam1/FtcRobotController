@@ -44,13 +44,13 @@ public class RobotHardware {
     // ---------------- MOTORS ----------------
     private void initMotors() {
         intakeMotor   = myOpMode.hardwareMap.get(DcMotorEx.class, "inTakeMotor");
-
         intakeMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+
         shooterMotor = myOpMode.hardwareMap.get(DcMotor.class, "shooterMotor");
         shooterMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-        shooterIntakeMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
         shooterIntakeMotor = myOpMode.hardwareMap.get(DcMotor.class, "shooterIntakeMotor");
+        shooterIntakeMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
     }
     public void intakeOn() {

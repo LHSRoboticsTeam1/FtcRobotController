@@ -2,11 +2,10 @@ package org.firstinspires.ftc.teamcode;
 
 
 
-import static org.lhssa.ftc.teamcode.pedroPathing.PedroTeleopData.startingPose;
 
 import com.pedropathing.follower.Follower;
-import com.pedropathing.paths.Path;
 import com.pedropathing.utils.Timer;
+import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -17,11 +16,9 @@ import org.firstinspires.ftc.teamcode.teamPedroPathing.TeamPoses;
 import org.lhssa.ftc.teamcode.pedroPathing.AllianceColor;
 import org.lhssa.ftc.teamcode.pedroPathing.HeadingInterpolationType;
 import org.lhssa.ftc.teamcode.pedroPathing.PedroMotion;
-import org.lhssa.ftc.teamcode.pedroPathing.PedroPathData;
 import org.lhssa.ftc.teamcode.pedroPathing.PedroPather;
 
 
-@Disabled
 @TeleOp
 public class BiobuzzAutonomousmk1 extends OpMode {
 
@@ -35,7 +32,9 @@ public class BiobuzzAutonomousmk1 extends OpMode {
     private Limelight3A limelight;
     private int currentAction = 0;
 
+
     private Timer shooterTimer;
+    private Timer parkTimer;
 
     @Override
     public void init() {
@@ -43,8 +42,8 @@ public class BiobuzzAutonomousmk1 extends OpMode {
         follower = Constants.create(hardwareMap);
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
         pedroMotion = new PedroMotion(follower);
-
-
+        parkTimer = new Timer();
+    shooterTimer = new Timer();
     }
 
     @Override
@@ -53,23 +52,28 @@ public class BiobuzzAutonomousmk1 extends OpMode {
     }
 
     public void start() {
-        limelight.pipelineSwitch(allianceColor == AllianceColor.BLUE ? 99 : 98);
+        limelight.pipelineSwitch(allianceColor == AllianceColor.BLUE ? 1 : 2);
         pedroPather = new PedroPather(TeamPoses.canonicalColor, allianceColor, PedroPather::FlipRoutineAlliancesOnOppositeSides);
+        parkTimer.reset();
     }
 
     @Override
     public void loop() {
-        PedroPathData startToGarden = pedroPather.pathBetween(TeamPoses.startShootPose, TeamPoses.startGardenPose, HeadingInterpolationType.LINEAR);
-        PedroPathData garden = pedroPather.pathBetween(TeamPoses.startGardenPose, TeamPoses.endGardenPose, HeadingInterpolationType.LINEAR);
-        PedroPathData gardenToPark = pedroPather.pathBetween(TeamPoses.startGardenPose, TeamPoses.endGardenPose, HeadingInterpolationType.LINEAR);
+        LLResult llResult = limelight.getLatestResult();
+        follower.update();
         telemetry.clear();
         telemetry.addData("this is the currently selected alliance", allianceColor.toString());
         telemetry.addData("this is the currently selected side", startingSide.toString());
-        //TODO: This might not work check in with Alwood
+        if(timeToPark()){
+            pedroMotion.goPath(pedroPather.pathBetween(follower.pose(), TeamPoses.parkPose, HeadingInterpolationType.LINEAR));
+            if(pedroMotion.isPathComplete()){
+                requestOpModeStop();
+            }
+        }
         switch (currentAction) {
             case 0:
-                robotHardware.shooterON();
                 if(shootUntilComplete()){
+
 
                     currentAction = 1;
                 }
@@ -79,23 +83,45 @@ public class BiobuzzAutonomousmk1 extends OpMode {
                 currentAction = 2;
                 break;
             case 2:
-                follower.update();
-                pedroMotion.goPath(startToGarden);
+                pedroMotion.goPath(pedroPather.pathBetween(TeamPoses.startShootPose, TeamPoses.startGardenPose, HeadingInterpolationType.LINEAR));
                 if (pedroMotion.isPathComplete()) {
                     currentAction = 3;
                 }
-
+                break;
 
             case 3:
-                pedroMotion.goPath(garden);
-                currentAction = 4;
+                pedroMotion.goPath(pedroPather.pathBetween(TeamPoses.startGardenPose, TeamPoses.endGardenPose, HeadingInterpolationType.LINEAR), 0.5);
+                if (pedroMotion.isPathComplete()) {
+                    currentAction = 4;
+                }
+                break;
             case 4:
                 robotHardware.intakeOff();
                 currentAction = 5;
                 break;
             case 5:
-                pedroMotion.goPath(gardenToPark);
-                currentAction = 6;
+                pedroMotion.goPath(pedroPather.pathBetween(TeamPoses.startGardenPose, TeamPoses.startShootPose, HeadingInterpolationType.LINEAR));
+                if (pedroMotion.isPathComplete()) {
+                    currentAction = 6;
+                }
+                break;
+            case 6:
+                if (llResult.isValid()){
+                    if(shootUntilComplete()){
+                        currentAction = 7;
+
+                    }
+                } else {
+
+                }
+
+
+                break;
+            case 7:
+                pedroMotion.goPath(pedroPather.pathBetween(TeamPoses.startShootPose, TeamPoses.parkPose, HeadingInterpolationType.LINEAR));
+                if(pedroMotion.isPathComplete()) {
+                    currentAction = 8;
+                }
                 break;
         }
     }
@@ -122,5 +148,10 @@ public class BiobuzzAutonomousmk1 extends OpMode {
         }
         return isComplete;
 
+    }
+    private boolean timeToPark(){
+        boolean isTime = false;
+        isTime = parkTimer.seconds() > 15;
+        return isTime;
     }
 }
