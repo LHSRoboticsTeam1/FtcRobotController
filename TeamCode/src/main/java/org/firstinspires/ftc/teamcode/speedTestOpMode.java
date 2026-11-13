@@ -22,7 +22,7 @@ public class speedTestOpMode extends OpMode {
 
     @Override
     public void init() {
-        inTakeMotor = hardwareMap.get(DcMotorEx.class, "inTakeMotor");
+        inTakeMotor = hardwareMap.get(DcMotorEx.class, "shooterMotor");
         inTakeMotor.setDirection(DcMotorEx.Direction.FORWARD);
         inTakeMotor.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         voltageSensor = hardwareMap.get(VoltageSensor.class, "Control Hub");
