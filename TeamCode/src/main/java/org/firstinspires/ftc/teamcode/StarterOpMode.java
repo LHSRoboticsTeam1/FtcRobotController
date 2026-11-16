@@ -4,6 +4,7 @@ import com.pedropathing.follower.Follower;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -13,6 +14,8 @@ import org.firstinspires.ftc.teamcode.teamPedroPathing.PedroPathConfiguration;
 import java.util.List;
 
 
+//why is this here I deleted it
+@Disabled
 @TeleOp
 public class StarterOpMode extends OpMode{
     private RobotHardware robotHardware;
