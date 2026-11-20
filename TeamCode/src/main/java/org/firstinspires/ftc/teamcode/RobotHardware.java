@@ -70,6 +70,9 @@ public class RobotHardware {
     public void transferOn2(){
         transfer2.setPower(0.5);
     }
+    public void transferOff(){
+        transfer2.setPower(0);
+    }
     // public void shooterIntakeOn(){
    //     shooterIntakeMotor.setPower(1);
    // }

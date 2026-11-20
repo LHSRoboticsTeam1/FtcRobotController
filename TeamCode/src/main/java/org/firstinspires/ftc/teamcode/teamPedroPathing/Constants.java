@@ -22,14 +22,11 @@ public class Constants {
         c.frontRightName.set("FrontRight");
         c.backLeftName.set("LeftBack");
         c.backRightName.set("BackRight");
-        c.frontLeftDirection.set(DcMotorSimple.Direction.FORWARD);
-        c.frontRightDirection.set(DcMotorSimple.Direction.REVERSE);
+        c.frontLeftDirection.set(DcMotorSimple.Direction.REVERSE);
+        c.frontRightDirection.set(DcMotorSimple.Direction.FORWARD);
         c.backLeftDirection.set(DcMotorSimple.Direction.REVERSE);
-        c.backRightDirection.set(DcMotorSimple.Direction.FORWARD );
-
-            c.manualBrakeMode.set(true);
-            }
-    );
+        c.backRightDirection.set(DcMotorSimple.Direction.FORWARD);
+    });
 
     public static PinpointConfig localizerConfig = new PinpointConfig(c -> {
         c.name.set("pinpoint");

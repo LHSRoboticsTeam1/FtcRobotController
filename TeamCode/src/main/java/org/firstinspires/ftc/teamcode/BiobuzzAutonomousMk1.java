@@ -20,7 +20,7 @@ import org.lhssa.ftc.teamcode.pedroPathing.PedroPather;
 
 
 @Autonomous
-public class BiobuzzAutonomousMk1 extends OpMode {
+public class BiobuzzAutonomousMk1 extends OpMode{
 
     private StartingSide startingSide = StartingSide.HIVEUP;
     private AllianceColor allianceColor = AllianceColor.RED;
@@ -55,9 +55,11 @@ public class BiobuzzAutonomousMk1 extends OpMode {
     }
 
     public void start() {
-        limelight.pipelineSwitch(allianceColor == AllianceColor.BLUE ? 2 : 1);
+        limelight.pipelineSwitch(allianceColor == AllianceColor.BLUE ? 1 : 2);
+        limelight.start();
         pedroPathTelemetry = new PedroPathTelemetry(telemetry, follower, allianceColor);
         pedroPather = new PedroPather(TeamPoses.canonicalColor, allianceColor, PedroPather::FlipRoutineAlliancesOnOppositeSides);
+
         parkTimer.reset();
         follower.setPose(TeamPoses.startShootPose);
     }
@@ -67,109 +69,81 @@ public class BiobuzzAutonomousMk1 extends OpMode {
         LLResult llResult = limelight.getLatestResult();
         follower.update();
         pedroPathTelemetry.pathTelemetry(telemetryMessage);
-
-
-        // telemetry.clear();
-        // telemetry.addData("this is the currently selected alliance", allianceColor.toString());
-        // telemetry.addData("this is the currently selected side", startingSide.toString());
-      /*  if(timeToPark()){
+        if(timeToPark()){
             pedroMotion.goPath(pedroPather.pathBetween(follower.pose(), TeamPoses.parkPose, HeadingInterpolationType.LINEAR));
             if(pedroMotion.isPathComplete()){
                 requestOpModeStop();
             }
         }
-
-       */
-
-
-        //Todo: Fix numbers
         switch (currentAction) {
             case 0:
                 telemetryMessage = "Shooting";
                 if(shootUntilComplete()){
-
-
                     currentAction = 1;
                 }
                 break;
             case 1:
-                telemetryMessage = "Intake On";
-                robotHardware.intakeOn();
+                telemetryMessage = "transfer Off";
+                robotHardware.transferOff();
                 currentAction = 2;
                 break;
             case 2:
-                pedroMotion.goPath(pedroPather.pathBetween(TeamPoses.startShootPose, TeamPoses.moveAwayFromWall, HeadingInterpolationType.LINEAR));
-                if (pedroMotion.isPathComplete()) {
-                    currentAction = 11;
-                }
-                break;
-            case 11:
                 telemetryMessage = "Going to Garden";
-                pedroMotion.goPath(pedroPather.pathBetween(TeamPoses.moveAwayFromWall, TeamPoses.startGardenPose, HeadingInterpolationType.LINEAR));
-                if(pedroMotion.isPathComplete()){
-                    currentAction = 3;
-                }
-                break;
-            case 3:
-                telemetryMessage = "Picking up balls";
-                pedroMotion.goPath(pedroPather.pathBetween(TeamPoses.startGardenPose, TeamPoses.endGardenPose, HeadingInterpolationType.LINEAR), 0.5);
+                pedroMotion.goPath(pedroPather.pathBetween(HeadingInterpolationType.LINEAR,
+                        TeamPoses.startShootPose,
+                        TeamPoses.midGardenPose,
+                        TeamPoses.endGardenPose
+                ));
                 if (pedroMotion.isPathComplete()) {
                     currentAction = 4;
                 }
                 break;
-            case 4:
+//case 3 is skipped
+            case 3:
                 robotHardware.intakeOff();
-                currentAction = 5;
+                currentAction = 4;
+                break;
+
+            case 4:
+                telemetryMessage = "Going to Shooting";
+                pedroMotion.goPath(pedroPather.pathBetween(HeadingInterpolationType.LINEAR,
+                        TeamPoses.endGardenPose,
+                        TeamPoses.midGardenPose,
+                        TeamPoses.startShootPose
+                ));
+
+                if (pedroMotion.isPathComplete()){
+                    currentAction = 5 ;
+                }
+
                 break;
             case 5:
-                telemetryMessage = "Going to Shooting";
-                pedroMotion.goPath(pedroPather.pathBetween(TeamPoses.endGardenPose, TeamPoses.moveAwayFromWall, HeadingInterpolationType.LINEAR));
-                if (pedroMotion.isPathComplete()) {
-                    currentAction = 12;
+                telemetryMessage = "waiting for hive up";
+                if (llResult.isValid()){
+                    shooterTimer.reset();
+                        currentAction = 6;
                 }
-                break;
-            case 12:
-                telemetryMessage = "Going to Shooting";
-                pedroMotion.goPath(pedroPather.pathBetween(TeamPoses.moveAwayFromWall, TeamPoses.startShootPose, HeadingInterpolationType.LINEAR));
-                if (pedroMotion.isPathComplete()){
-                    currentAction = 6;
-                }
-
                 break;
             case 6:
-                if (llResult.isValid()){
-
-                        currentAction = 14;
-
-
-                }
-                    telemetryMessage = "Haha";
-
-
-                break;
-            case 14:
+                telemetryMessage = "Shooting";
                 if(shootUntilComplete()){
                     currentAction = 7;
                 }
                 break;
             case 7:
                 telemetryMessage = "Going to Park";
-                pedroMotion.goPath(pedroPather.pathBetween(TeamPoses.startShootPose, TeamPoses.moveAwayFromWall, HeadingInterpolationType.LINEAR));
+                pedroMotion.goPath(pedroPather.pathBetween(
+                        HeadingInterpolationType.TANGENT,
+                        TeamPoses.startShootPose,
+                        TeamPoses.midParkPose,
+                        TeamPoses.parkPose
+                        ));
+                robotHardware.intakeOff();
+                robotHardware.transferOff();
                 if(pedroMotion.isPathComplete()) {
                     currentAction = 8;
+
                 }
-                break;
-            case 8:
-                telemetryMessage = "Going to Park";
-                pedroMotion.goPath(pedroPather.pathBetween(TeamPoses.moveAwayFromWall, TeamPoses.startGardenPose, HeadingInterpolationType.LINEAR));
-                if(pedroMotion.isPathComplete()){
-                    currentAction = 9;
-                }
-                break;
-            case 9:
-                telemetryMessage = "Going to Park";
-                pedroMotion.goPath(pedroPather.pathBetween(TeamPoses.startGardenPose, TeamPoses.parkPose, HeadingInterpolationType.LINEAR));
-                currentAction = 10;
                 break;
 
         }
@@ -189,9 +163,14 @@ public class BiobuzzAutonomousMk1 extends OpMode {
 
     private boolean shootUntilComplete() {
         boolean isComplete;
+        boolean isShootTime;
         robotHardware.shooterON();
-
-        isComplete = shooterTimer.milliseconds() > 3000;
+        isShootTime = shooterTimer.milliseconds() > 1000;
+        isComplete = shooterTimer.milliseconds() > 4000;
+        if (isShootTime){
+            robotHardware.intakeOn();
+            robotHardware.transferOn();
+        }
         if(isComplete){
             robotHardware.shooterOFF();
         }
@@ -200,7 +179,7 @@ public class BiobuzzAutonomousMk1 extends OpMode {
     }
     private boolean timeToPark(){
         boolean isTime = false;
-        isTime = parkTimer.seconds() > 15;
+        isTime = parkTimer.seconds() > 25;
         return isTime;
     }
 }
